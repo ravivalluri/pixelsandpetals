@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F0F8FF;
+  --foreground: #3C4A5C;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Use liquid glass background consistently */
+body {
+  background: linear-gradient(135deg, #D9E8F5 0%, #F0F8FF 100%);
+  color: var(--foreground);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+}
+
+/* Import liquid glass design system styles */
+@import "./globals-liquid-glass.css";
