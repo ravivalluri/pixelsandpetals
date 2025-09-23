@@ -8,5 +8,8 @@
         "build": "next build --turbopack",
         "start": "next start",
         "lint": "eslint"
+    },
+    "dependencies": {
+        "@emailjs/browser": "^4.4.1"
     }
 }

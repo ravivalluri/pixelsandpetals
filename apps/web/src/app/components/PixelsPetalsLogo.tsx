@@ -1,4 +1,6 @@
+"use client";
 import React from 'react';
+import { useTheme } from '@/app/context/ThemeContext';
 
 interface PixelsPetalsLogoProps {
   width?: number;
@@ -11,6 +13,12 @@ export const PixelsPetalsLogo: React.FC<PixelsPetalsLogoProps> = ({
   height = 100,
   className = ""
 }) => {
+  const { theme, colors } = useTheme();
+
+  // Define colors based on theme
+  const wordmarkColor = theme === 'dark' ? '#FFFFFF' : '#1A1F24';
+  const taglineColor = theme === 'dark' ? '#E2E8F0' : '#2A323C';
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +30,7 @@ export const PixelsPetalsLogo: React.FC<PixelsPetalsLogoProps> = ({
       className={className}
     >
       <title id="title">Pixels &amp; Petals — updated logo</title>
-      <desc id="desc">Logo with darker text for visibility and larger tagline.</desc>
+      <desc id="desc">Logo with theme-adaptive text for visibility and larger tagline.</desc>
 
       <defs>
         <linearGradient id="gradIcon" x1="0" x2="1">
@@ -37,13 +45,13 @@ export const PixelsPetalsLogo: React.FC<PixelsPetalsLogoProps> = ({
             font-weight: 700;
             font-size: 46px;
             letter-spacing: -0.01em;
-            fill: #1A1F24;
+            fill: ${wordmarkColor};
           }
           .tagline {
             font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
             font-weight: 500;
             font-size: 22px;
-            fill: #2A323C;
+            fill: ${taglineColor};
           }
         `}</style>
       </defs>
@@ -55,9 +63,9 @@ export const PixelsPetalsLogo: React.FC<PixelsPetalsLogoProps> = ({
         <path d="M48 18 C70 10 98 24 100 46 C102 68 80 84 60 92 C40 100 30 86 32 64 C34 42 38 28 48 18 Z"
           fill="rgba(255,255,255,0.12)"/>
         <g transform="translate(78,70)">
-          <rect x="0" y="0" width="12" height="12" fill="#1A1F24" opacity="0.2" rx="2"/>
-          <rect x="-16" y="0" width="12" height="12" fill="#1A1F24" opacity="0.2" rx="2"/>
-          <rect x="0" y="-16" width="12" height="12" fill="#1A1F24" opacity="0.2" rx="2"/>
+          <rect x="0" y="0" width="12" height="12" fill={wordmarkColor} opacity="0.2" rx="2"/>
+          <rect x="-16" y="0" width="12" height="12" fill={wordmarkColor} opacity="0.2" rx="2"/>
+          <rect x="0" y="-16" width="12" height="12" fill={wordmarkColor} opacity="0.2" rx="2"/>
         </g>
       </g>
 

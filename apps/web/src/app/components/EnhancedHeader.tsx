@@ -4,13 +4,17 @@ import { AdaptiveLumenNav } from "@pixelsandpetals/ui";
 import { BlobMenu } from "@/app/components/BlobMenu";
 import { CommandPalette } from "@/app/components/CommandPalette";
 import { PixelsPetalsLogo } from "@/app/components/PixelsPetalsLogo";
+import { ThemeToggle } from "@/app/components/ThemeToggle/ThemeToggle";
+import { useTheme } from "@/app/context/ThemeContext";
+import styles from './EnhancedHeader/EnhancedHeader.module.css';
 
 const navItems = [
   { id: "home", label: "Home", href: "#home-section" },
-  { id: "projects", label: "Projects", href: "#projects-section" },
-  { id: "clients", label: "Clients", href: "#clients-section" },
+  { id: "projects", label: "Solutions", href: "#projects-section" },
+  { id: "clients", label: "Partners", href: "#clients-section" },
   { id: "about", label: "About", href: "#about-section" },
-  { id: "contact", label: "Contact", href: "#contact-section" },
+  { id: "contact", label: "Connect", href: "#contact-section" },
+  { id: "resume", label: "Resume", href: "/resume.pdf" },
 ];
 
 const contextualSuggestions = [
@@ -50,6 +54,7 @@ const contextualSuggestions = [
 ];
 
 export default function EnhancedHeader() {
+  const { colors } = useTheme();
   const [activeSection, setActiveSection] = useState("home");
 
   // Track active section based on scroll position
@@ -88,7 +93,9 @@ export default function EnhancedHeader() {
     active: activeSection === item.id
   }));
 
-  const handleItemClick = (item: any) => {
+  type NavItem = typeof navItems[number];
+
+  const handleItemClick = (item: NavItem) => {
     const element = document.getElementById(item.href.substring(1));
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -124,10 +131,17 @@ export default function EnhancedHeader() {
         onItemClick={handleItemClick}
         onSearch={handleSearch}
         contextualSuggestions={contextualSuggestions}
-        className="enhanced-lumen-nav"
+        className={styles.enhancedLumenNav}
+        themeColors={{
+          backgroundColor: `${colors.glassBackground}`,
+          textColor: colors.textPrimary,
+          borderColor: colors.glassBorder,
+        }}
+        themeToggle={<ThemeToggle />}
       />
+
       <BlobMenu />
       <CommandPalette />
     </>
   );
-}
+};

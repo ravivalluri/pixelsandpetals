@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
+import { useTheme } from "@/app/context/ThemeContext";
 import { colors, spacing, typography } from '@pixelsandpetals/ui';
 
 interface CrystalFacet {
@@ -20,24 +21,26 @@ interface AdaptiveContent {
 }
 
 export const CrystallineCore: React.FC = () => {
+  const { theme, colors: themeColors } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | null>(null);
   const rotationRef = useRef({ x: 0, y: 0, z: 0 });
   const timeRef = useRef(0);
   const lastFrameTime = useRef(0);
 
-  // Define reliable color palette
+  // Define reliable color palette that adapts to theme
   const crystalColors = {
-    blue: '#6699FF',
-    purple: '#9966CC',
-    white: '#FFFFFF',
-    background: '#F0F8FF',
-    text: '#3C4A5C'
+    blue: themeColors.primaryAccent,
+    purple: themeColors.secondaryAccent,
+    white: theme === 'dark' ? '#FFFFFF' : '#FFFFFF',
+    background: theme === 'dark' ? themeColors.primaryBackground : themeColors.surfaceBackground,
+    text: themeColors.textPrimary,
+    textLight: themeColors.textSubtle
   };
 
   const [adaptiveContent, setAdaptiveContent] = useState<AdaptiveContent>({
-    headline: "Crafting Digital Futures",
-    subheadline: "Where Innovation Meets Precision",
+    headline: "",
+    subheadline: "",
     morphType: 'default'
   });
 
@@ -48,8 +51,8 @@ export const CrystallineCore: React.FC = () => {
   // Adaptive content configurations
   const contentLibrary = {
     default: {
-      headline: "Crafting Digital Futures",
-      subheadline: "Where Innovation Meets Precision",
+      headline: "",
+      subheadline: "",
       morphShape: 'classic'
     },
     ai: {
@@ -334,29 +337,7 @@ export const CrystallineCore: React.FC = () => {
 
     ctx.save();
 
-    // Headline projection
-    ctx.font = `bold ${typography.fontSizes.xl}px ${typography.fonts.heading}`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    // Create glowing text effect
-    const glowGradient = ctx.createLinearGradient(0, centerY - 20, 0, centerY + 20);
-    glowGradient.addColorStop(0, crystalColors.blue);
-    glowGradient.addColorStop(0.5, crystalColors.purple);
-    glowGradient.addColorStop(1, crystalColors.blue);
-
-    // Text shadow/glow
-    ctx.shadowColor = crystalColors.blue + '66';
-    ctx.shadowBlur = 20;
-    ctx.fillStyle = glowGradient;
-    ctx.fillText(adaptiveContent.headline, centerX, centerY - 15);
-
-    // Subheadline
-    ctx.font = `${typography.fontWeights.normal} ${typography.fontSizes.base}px ${typography.fonts.body}`;
-    ctx.shadowColor = crystalColors.purple + '44';
-    ctx.shadowBlur = 10;
-    ctx.fillStyle = crystalColors.text + 'CC';
-    ctx.fillText(adaptiveContent.subheadline, centerX, centerY + 15);
+    // No text rendering - crystal only
 
     ctx.restore();
   };
@@ -387,8 +368,9 @@ export const CrystallineCore: React.FC = () => {
     rotationRef.current.x = Math.sin(timeRef.current * 0.0003) * 0.1;
     rotationRef.current.z = Math.cos(timeRef.current * 0.0002) * 0.05;
 
-    // Clear canvas
-    ctx.clearRect(0, 0, dimensions.width, dimensions.height);
+    // Clear canvas with theme-appropriate background
+    ctx.fillStyle = theme === 'dark' ? themeColors.primaryBackground : themeColors.surfaceBackground;
+    ctx.fillRect(0, 0, dimensions.width, dimensions.height);
 
     // Update facets based on current morph type
     const currentFacets = generateCrystalFacets(adaptiveContent.morphType);
@@ -447,7 +429,7 @@ export const CrystallineCore: React.FC = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [adaptiveContent, dimensions]);
+  }, [adaptiveContent, dimensions, theme, themeColors]);
 
   return (
     <div
@@ -458,30 +440,18 @@ export const CrystallineCore: React.FC = () => {
         justifyContent: 'center',
         position: 'relative',
         zIndex: 3,
-        paddingTop: spacing[8],
-        paddingBottom: spacing[8],
         minHeight: '600px',
       }}
     >
       <canvas
         ref={canvasRef}
         style={{
-          filter: 'drop-shadow(0 10px 30px rgba(102, 153, 255, 0.3))',
+          filter: theme === 'dark' 
+            ? 'drop-shadow(0 10px 30px rgba(102, 153, 255, 0.2))' 
+            : 'drop-shadow(0 10px 30px rgba(102, 153, 255, 0.3))',
           marginBottom: spacing[6],
         }}
       />
-
-      {/* Context indicator */}
-      <div
-        style={{
-          fontSize: `${typography.fontSizes.sm}px`,
-          color: crystalColors.textLight,
-          textAlign: 'center',
-          opacity: 0.7,
-        }}
-      >
-        Adaptive Intelligence • {adaptiveContent.timeContext} • {adaptiveContent.morphType}
-      </div>
     </div>
   );
 };

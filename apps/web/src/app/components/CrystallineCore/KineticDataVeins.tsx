@@ -1,14 +1,23 @@
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
-import { colors, spacing, typography } from '@pixelsandpetals/ui';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useTheme } from "@/app/context/ThemeContext";
+import { spacing, typography } from '@pixelsandpetals/ui';
 
-// Define reliable color palette for data veins
-const veinColors = {
-  blue: '#6699FF',
-  purple: '#9966CC',
-  white: '#FFFFFF',
-  text: '#3C4A5C'
-};
+// Define reliable color palette for data veins that adapts to theme
+const veinColors = (
+  theme: 'light' | 'dark',
+  themeColors: {
+    primaryAccent: string;
+    secondaryAccent: string;
+    textPrimary: string;
+    primaryBackground: string;
+  }
+) => ({
+  blue: themeColors.primaryAccent,
+  purple: themeColors.secondaryAccent,
+  white: theme === 'dark' ? '#FFFFFF' : '#FFFFFF',
+  text: themeColors.textPrimary
+});
 
 interface DataVein {
   id: string;
@@ -68,11 +77,12 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
   dimensions,
   onBloomInteraction
 }) => {
+  const { theme, colors: themeColors } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | null>(null);
   const timeRef = useRef(0);
   const lastRippleTime = useRef(0);
-  const audioContextRef = useRef<AudioContext>();
+  const audioContextRef = useRef<AudioContext | null>(null);
 
   const dataVeinsRef = useRef<DataVein[]>([]);
   const [hoveredBloom, setHoveredBloom] = useState<string | null>(null);
@@ -132,21 +142,24 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
 
   // Generate bloom petals
   const generateBloomPetals = (count: number = 8): BloomPetal[] => {
+    const veinColorsObj = veinColors(theme, themeColors);
     return Array.from({ length: count }, (_, i) => ({
       angle: (i / count) * Math.PI * 2,
       length: 15 + Math.random() * 10,
       opacity: 0.6 + Math.random() * 0.4,
-      color: Math.random() > 0.5 ? veinColors.blue : veinColors.purple,
+      color: Math.random() > 0.5 ? veinColorsObj.blue : veinColorsObj.purple,
       animationOffset: Math.random() * Math.PI * 2
     }));
   };
 
   // Initialize data veins and blooms
-  const initializeDataVeins = () => {
+  const initializeDataVeins = useCallback(() => {
     const veins: DataVein[] = [];
     const centerX = coreX;
     const centerY = coreY;
     const veinCount = 8;
+
+    const veinColorsObj = veinColors(theme, themeColors);
 
     for (let i = 0; i < veinCount; i++) {
       const angle = (i / veinCount) * Math.PI * 2 + Math.random() * 0.3;
@@ -191,24 +204,24 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
         energy: Math.random(),
         maxEnergy: 1,
         pulsation: Math.random() * Math.PI * 2,
-        color: Math.random() > 0.5 ? veinColors.blue : veinColors.purple,
+        color: Math.random() > 0.5 ? veinColorsObj.blue : veinColorsObj.purple,
         bloom
       });
     }
 
     dataVeinsRef.current = veins;
-  };
+  }, [coreX, coreY, theme, themeColors, bloomContents]);
 
   // Initialize audio context for interaction sounds
-  const initializeAudio = () => {
+  const initializeAudio = useCallback(() => {
     if (typeof window !== 'undefined' && !audioContextRef.current) {
       try {
-        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        audioContextRef.current = new (window.AudioContext || (window as Window & typeof globalThis & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!)();
       } catch (e) {
         console.log('Audio not supported');
       }
     }
-  };
+  }, []);
 
   // Play interaction sound
   const playInteractionSound = (frequency: number = 440, duration: number = 200) => {
@@ -247,6 +260,7 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
   // Render data vein with energy flow
   const renderDataVein = (ctx: CanvasRenderingContext2D, vein: DataVein) => {
     const { startX, startY, endX, endY, controlX1, controlY1, controlX2, controlY2 } = vein;
+    const veinColorsObj = veinColors(theme, themeColors);
 
     ctx.save();
 
@@ -300,6 +314,8 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
   const renderInsightBloom = (ctx: CanvasRenderingContext2D, bloom: InsightBloom) => {
     if (bloom.dissolved) return;
 
+    const veinColorsObj = veinColors(theme, themeColors);
+
     ctx.save();
     ctx.translate(bloom.x, bloom.y);
 
@@ -308,7 +324,7 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
     ctx.scale(scale * pulseScale, scale * pulseScale);
 
     // Render petals
-    bloom.petals.forEach((petal, index) => {
+    bloom.petals.forEach((petal) => {
       ctx.save();
       ctx.rotate(petal.angle + Math.sin(timeRef.current * 0.002 + petal.animationOffset) * 0.1);
 
@@ -329,7 +345,7 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
 
     // Central bloom core
     const coreGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, bloom.size/2);
-    coreGradient.addColorStop(0, veinColors.white + '80');
+    coreGradient.addColorStop(0, veinColorsObj.white + '80');
     coreGradient.addColorStop(0.4, bloom.petals[0].color + '60');
     coreGradient.addColorStop(1, bloom.petals[0].color + '20');
 
@@ -343,7 +359,7 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
       ctx.font = `${typography.fontWeights.bold} ${typography.fontSizes.xs}px ${typography.fonts.body}`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillStyle = veinColors.text;
+      ctx.fillStyle = veinColorsObj.text;
       ctx.fillText(bloom.content.text, 0, 0);
     } else {
       ctx.font = `${typography.fontSizes.lg}px Arial`;
@@ -357,6 +373,7 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
 
   // Render core ripples
   const renderCoreRipples = (ctx: CanvasRenderingContext2D) => {
+    const veinColorsObj = veinColors(theme, themeColors);
     coreRipplesRef.current.forEach(ripple => {
       const age = timeRef.current - ripple.time;
       const maxAge = 1000; // 1 second
@@ -369,7 +386,7 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
 
       ctx.save();
       ctx.globalAlpha = currentOpacity;
-      ctx.strokeStyle = veinColors.blue + '60';
+      ctx.strokeStyle = veinColorsObj.blue + '60';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(ripple.x, ripple.y, currentRadius, 0, Math.PI * 2);
@@ -479,7 +496,7 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
   };
 
   // Main animation loop
-  const animate = () => {
+  const animate = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -488,8 +505,9 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
 
     timeRef.current += 16;
 
-    // Clear canvas
-    ctx.clearRect(0, 0, dimensions.width, dimensions.height);
+    // Clear canvas with theme-appropriate background
+    ctx.fillStyle = theme === 'dark' ? themeColors.primaryBackground : '#FFFFFF';
+    ctx.fillRect(0, 0, dimensions.width, dimensions.height);
 
     // Update vein energy and bloom animations
     dataVeinsRef.current = dataVeinsRef.current.map(vein => ({
@@ -520,20 +538,29 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
     coreRipplesRef.current = coreRipplesRef.current.filter(ripple => timeRef.current - ripple.time < 1000);
 
     animationRef.current = requestAnimationFrame(animate);
-  };
+  }, [theme, themeColors, dimensions]);
 
   // Initialize on mount
   useEffect(() => {
     initializeDataVeins();
     initializeAudio();
-  }, [coreX, coreY]);
+  }, [initializeDataVeins, initializeAudio]);
 
-  // Setup canvas
+  // Setup canvas with proper pixel dimensions
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (canvas) {
-      canvas.width = dimensions.width;
-      canvas.height = dimensions.height;
+    if (canvas && dimensions.width > 0 && dimensions.height > 0) {
+      // Set actual canvas resolution to match the CSS size
+      const devicePixelRatio = window.devicePixelRatio || 1;
+
+      canvas.width = dimensions.width * devicePixelRatio;
+      canvas.height = dimensions.height * devicePixelRatio;
+
+      // Scale the context back to match CSS pixels
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.scale(devicePixelRatio, devicePixelRatio);
+      }
     }
   }, [dimensions]);
 
@@ -545,18 +572,18 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, []);
+  }, [animate]);
 
   return (
     <div
       style={{
         position: 'absolute',
-        top: 0,
+        top: '80px', // Account for navbar height
         left: 0,
         width: '100%',
-        height: '100%',
+        height: 'calc(100vh - 80px)', // Match main canvas height
         pointerEvents: 'auto',
-        zIndex: 2,
+        zIndex: 1.5, // Behind hero content but above main canvas
       }}
     >
       <canvas
@@ -566,7 +593,10 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
         style={{
           width: '100%',
           height: '100%',
+          display: 'block', // Remove inline spacing
           cursor: hoveredBloom ? 'pointer' : 'default',
+          position: 'relative',
+          zIndex: 2, // Ensure this canvas is above the background canvas
         }}
       />
 
@@ -578,10 +608,13 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
             bottom: spacing[4],
             left: '50%',
             transform: 'translateX(-50%)',
-            background: 'rgba(255, 255, 255, 0.95)',
+            background: theme === 'dark' ? 'rgba(42, 47, 62, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+            color: themeColors.textPrimary,
             padding: `${spacing[2]}px ${spacing[4]}px`,
             borderRadius: '8px',
-            boxShadow: '0 4px 20px rgba(102, 153, 255, 0.3)',
+            boxShadow: theme === 'dark' 
+              ? '0 4px 20px rgba(102, 153, 255, 0.2)' 
+              : '0 4px 20px rgba(102, 153, 255, 0.3)',
             backdropFilter: 'blur(10px)',
             zIndex: 10,
           }}

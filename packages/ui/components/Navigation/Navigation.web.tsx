@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { colors, typography, spacing } from '../../tokens';
+import { typography, spacing } from '../../tokens';
 import { Button } from '../Button/Button.web';
+
 
 export interface NavigationItem {
   label: string;
@@ -35,12 +36,18 @@ export const Navigation: React.FC<NavigationProps> = ({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: `${spacing[4]}px ${spacing[6]}px`,
-    backgroundColor: colors.background,
-    borderBottom: `1px solid ${colors.lightGray}`,
+    background: 'rgba(255, 255, 255, 0.1)',
+    backdropFilter: 'blur(20px) saturate(1.8)',
+    WebkitBackdropFilter: 'blur(20px) saturate(1.8)',
+    border: 'none',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.2)',
     height: 80,
-    position: 'sticky',
+    position: 'fixed',
     top: 0,
+    left: 0,
+    right: 0,
     zIndex: 1000,
+    transition: 'all 0.3s cubic-bezier(0.23, 1, 0.32, 1)',
     ...style,
   };
 
@@ -48,8 +55,9 @@ export const Navigation: React.FC<NavigationProps> = ({
     fontSize: typography.fontSizes['2xl'],
     fontWeight: typography.fontWeights.bold,
     fontFamily: typography.fonts.heading,
-    color: colors.coreDark,
+    color: 'rgba(255, 255, 255, 0.9)',
     margin: 0,
+    textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
   };
 
   const navItemsStyles: React.CSSProperties = {
@@ -62,56 +70,66 @@ export const Navigation: React.FC<NavigationProps> = ({
     padding: `${spacing[2]}px ${spacing[3]}px`,
     fontSize: typography.fontSizes.base,
     fontFamily: typography.fonts.body,
-    color: colors.darkGray,
+    color: 'rgba(255, 255, 255, 0.8)',
     fontWeight: typography.fontWeights.medium,
     textDecoration: 'none',
-    cursor: 'pointer',
-    borderBottom: '2px solid transparent',
-    transition: 'all 0.2s ease',
+    cursor: 'none',
+    background: 'rgba(255, 255, 255, 0.05)',
+    backdropFilter: 'blur(8px)',
+    borderRadius: '8px',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    transition: 'all 0.3s cubic-bezier(0.23, 1, 0.32, 1)',
   };
 
   const activeNavItemStyles: React.CSSProperties = {
-    color: colors.accentPop,
-    borderBottomColor: colors.accentPop,
+    color: 'rgba(255, 255, 255, 0.95)',
+    background: 'rgba(102, 153, 255, 0.2)',
+    border: '1px solid rgba(102, 153, 255, 0.3)',
+    transform: 'translateY(-1px)',
+    boxShadow: '0 4px 16px rgba(102, 153, 255, 0.2)',
   };
 
-  const ctaStyles: React.CSSProperties = {
-    marginLeft: spacing[4],
-  };
-
-  // Mobile styles (hidden on desktop)
-  const mobileMenuStyles: React.CSSProperties = {
-    display: 'none',
-    '@media (max-width: 768px)': {
-      display: 'block',
-    },
-  };
+  // Prevent unused variable warnings
+  // These are kept for future mobile implementation
+  void mobileMenuOpen;
+  void toggleMobileMenu;
 
   return (
     <nav style={containerStyles}>
+      {/* Top highlight */}
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+        }}
+      />
       <h1 style={logoStyles}>{logo}</h1>
 
       <div style={navItemsStyles}>
         {items.map((item, index) => (
-          <button
+          <Button
             key={index}
+            title={item.label}
+            onPress={item.onPress}
+            variant="subtle"
+            size="sm"
             style={{
               ...navItemStyles,
               ...(item.active ? activeNavItemStyles : {}),
-              background: 'none',
-              border: 'none',
             }}
-            onClick={item.onPress}
-          >
-            {item.label}
-          </button>
+          />
         ))}
 
         {ctaButton && (
           <Button
             title={ctaButton.title}
             onPress={ctaButton.onPress}
-            style={ctaStyles}
+            variant="primary"
+            size="sm"
           />
         )}
       </div>

@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.6,
-    paddingVertical: spacing.4,
+    paddingHorizontal: spacing[6],
+    paddingVertical: spacing[4],
     backgroundColor: colors.background,
     borderBottomWidth: 1,
     borderBottomColor: colors.lightGray,
@@ -138,8 +138,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: spacing.4,
-    paddingVertical: spacing.3,
+    paddingHorizontal: spacing[4],
+    paddingVertical: spacing[3],
     height: 64,
   },
 
@@ -154,12 +154,12 @@ const styles = StyleSheet.create({
   webNavItems: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.6,
+    // gap: spacing.6, // 'gap' is not supported in React Native
   },
 
   webNavItem: {
-    paddingVertical: spacing.2,
-    paddingHorizontal: spacing.3,
+    paddingVertical: spacing[2],
+    paddingHorizontal: spacing[3],
   },
 
   webNavItemActive: {
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   },
 
   webCTA: {
-    marginLeft: spacing.4,
+    marginLeft: spacing[4],
   },
 
   // Mobile hamburger menu
@@ -210,12 +210,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     borderTopWidth: 1,
     borderTopColor: colors.lightGray,
-    paddingVertical: spacing.4,
+    paddingVertical: spacing[4],
   },
 
   mobileNavItem: {
-    paddingHorizontal: spacing.4,
-    paddingVertical: spacing.3,
+    paddingHorizontal: spacing[4],
+    paddingVertical: spacing[3],
     borderBottomWidth: 1,
     borderBottomColor: colors.lightGray,
   },
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
   },
 
   mobileCTA: {
-    paddingHorizontal: spacing.4,
-    paddingTop: spacing.6,
+    paddingHorizontal: spacing[4],
+    paddingTop: spacing[6],
   },
 });

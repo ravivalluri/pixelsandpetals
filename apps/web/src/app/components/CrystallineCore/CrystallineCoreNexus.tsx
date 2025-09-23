@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
-import { colors, spacing, typography } from '@pixelsandpetals/ui';
-import { CrystallineCore } from './CrystallineCore';
-import { KineticDataVeins } from './KineticDataVeins';
+import { spacing, typography } from '@pixelsandpetals/ui';
+import { useTheme } from '../../context/ThemeContext';
+import { QuickROICalculator } from '../QuickROICalculator/QuickROICalculator';
+import { UseCaseCarousel } from '../UseCaseCarousel/UseCaseCarousel';
 
 interface Particle {
   x: number;
@@ -32,8 +33,9 @@ interface Wave {
 }
 
 export const CrystallineCoreNexus: React.FC = () => {
+  const { theme, colors } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
   const mouseRef = useRef({ x: 0, y: 0, isMoving: false });
   const particlesRef = useRef<Particle[]>([]);
   const wavesRef = useRef<Wave[]>([]);
@@ -43,7 +45,7 @@ export const CrystallineCoreNexus: React.FC = () => {
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [isWebGLSupported, setIsWebGLSupported] = useState(true);
 
-  // Aether-Field Configuration
+  // Aether-Field Configuration that adapts to theme
   const config = {
     particleCount: 150,
     waveCount: 8,
@@ -52,15 +54,15 @@ export const CrystallineCoreNexus: React.FC = () => {
     returnForce: 0.02,
     colors: {
       particles: [
-        'rgba(217, 232, 245, 0.6)', // #D9E8F5
-        'rgba(102, 153, 255, 0.4)', // #6699FF
-        'rgba(153, 102, 204, 0.5)', // #9966CC
-        'rgba(240, 248, 255, 0.3)', // #F0F8FF
+        `rgba(${parseInt(colors.primaryBackground.slice(1, 3), 16)}, ${parseInt(colors.primaryBackground.slice(3, 5), 16)}, ${parseInt(colors.primaryBackground.slice(5, 7), 16)}, 0.6)`,
+        `rgba(${parseInt(colors.primaryAccent.slice(1, 3), 16)}, ${parseInt(colors.primaryAccent.slice(3, 5), 16)}, ${parseInt(colors.primaryAccent.slice(5, 7), 16)}, 0.4)`,
+        `rgba(${parseInt(colors.secondaryAccent.slice(1, 3), 16)}, ${parseInt(colors.secondaryAccent.slice(3, 5), 16)}, ${parseInt(colors.secondaryAccent.slice(5, 7), 16)}, 0.5)`,
+        `rgba(${parseInt(colors.surfaceBackground.slice(1, 3), 16)}, ${parseInt(colors.surfaceBackground.slice(3, 5), 16)}, ${parseInt(colors.surfaceBackground.slice(5, 7), 16)}, 0.3)`,
       ],
       waves: [
-        'rgba(102, 153, 255, 0.15)', // #6699FF
-        'rgba(153, 102, 204, 0.12)', // #9966CC
-        'rgba(217, 232, 245, 0.08)', // #D9E8F5
+        `rgba(${parseInt(colors.primaryAccent.slice(1, 3), 16)}, ${parseInt(colors.primaryAccent.slice(3, 5), 16)}, ${parseInt(colors.primaryAccent.slice(5, 7), 16)}, 0.15)`,
+        `rgba(${parseInt(colors.secondaryAccent.slice(1, 3), 16)}, ${parseInt(colors.secondaryAccent.slice(3, 5), 16)}, ${parseInt(colors.secondaryAccent.slice(5, 7), 16)}, 0.12)`,
+        `rgba(${parseInt(colors.primaryBackground.slice(1, 3), 16)}, ${parseInt(colors.primaryBackground.slice(3, 5), 16)}, ${parseInt(colors.primaryBackground.slice(5, 7), 16)}, 0.08)`,
       ]
     }
   };
@@ -229,9 +231,9 @@ export const CrystallineCoreNexus: React.FC = () => {
 
       ctx.save();
       ctx.globalAlpha = currentOpacity;
-      ctx.strokeStyle = colors.blue + '80';
+      ctx.strokeStyle = colors.primaryAccent + '80';
       ctx.lineWidth = 3;
-      ctx.shadowColor = colors.blue;
+      ctx.shadowColor = colors.primaryAccent;
       ctx.shadowBlur = 15;
       ctx.beginPath();
       ctx.arc(ripple.x, ripple.y, currentRadius, 0, Math.PI * 2);
@@ -239,7 +241,7 @@ export const CrystallineCoreNexus: React.FC = () => {
 
       // Inner ripple
       ctx.globalAlpha = currentOpacity * 0.5;
-      ctx.strokeStyle = colors.purple + '60';
+      ctx.strokeStyle = colors.secondaryAccent + '60';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(ripple.x, ripple.y, currentRadius * 0.7, 0, Math.PI * 2);
@@ -288,9 +290,9 @@ export const CrystallineCoreNexus: React.FC = () => {
 
     // Clear canvas with subtle gradient background
     const bgGradient = ctx.createLinearGradient(0, 0, 0, height);
-    bgGradient.addColorStop(0, '#F0F8FF');
-    bgGradient.addColorStop(0.5, '#D9E8F5');
-    bgGradient.addColorStop(1, '#F0F8FF');
+    bgGradient.addColorStop(0, colors.primaryBackground);
+    bgGradient.addColorStop(0.5, colors.secondaryBackground);
+    bgGradient.addColorStop(1, colors.primaryBackground);
 
     ctx.fillStyle = bgGradient;
     ctx.fillRect(0, 0, width, height);
@@ -323,7 +325,7 @@ export const CrystallineCoreNexus: React.FC = () => {
     animationRef.current = requestAnimationFrame(animate);
   };
 
-  // Handle mouse movement
+  // Handle mouse movement with throttling
   const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -376,12 +378,20 @@ export const CrystallineCoreNexus: React.FC = () => {
     };
   }, [dimensions]);
 
-  // Canvas setup
+  // Canvas setup with proper pixel dimensions
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas && dimensions.width > 0 && dimensions.height > 0) {
-      canvas.width = dimensions.width;
-      canvas.height = dimensions.height;
+      const devicePixelRatio = window.devicePixelRatio || 1;
+
+      canvas.width = dimensions.width * devicePixelRatio;
+      canvas.height = dimensions.height * devicePixelRatio;
+
+      // Scale the context back to match CSS pixels
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.scale(devicePixelRatio, devicePixelRatio);
+      }
     }
   }, [dimensions]);
 
@@ -393,161 +403,16 @@ export const CrystallineCoreNexus: React.FC = () => {
         minHeight: '100vh',
         paddingTop: '80px', // Account for navbar height
         overflow: 'hidden',
-        background: `linear-gradient(135deg, ${colors.backgroundLight} 0%, ${colors.background} 50%, ${colors.backgroundLight} 100%)`,
+        background: `linear-gradient(135deg, ${colors.primaryBackground} 0%, ${colors.secondaryBackground} 50%, ${colors.primaryBackground} 100%)`,
       }}
     >
-      {/* Aether-Field Canvas */}
-      <canvas
-        ref={canvasRef}
-        onMouseMove={handleMouseMove}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: 'calc(100vh - 80px)', // Account for navbar padding
-          cursor: 'none',
-          zIndex: 1,
-        }}
-      />
 
-      {/* Kinetic Data Veins Layer */}
-      <KineticDataVeins
-        coreX={dimensions.width / 2}
-        coreY={(dimensions.height / 2) + 40} // Slightly lower to center with content
-        dimensions={dimensions}
-        onBloomInteraction={(bloom) => {
-          // Trigger core interaction effects
-          coreInteractionRef.current.intensity = 1.0;
 
-          // Add core ripple
-          const newRipple = {
-            x: dimensions.width / 2,
-            y: dimensions.height / 2,
-            radius: 0,
-            opacity: 0.8,
-            time: timeRef.current
-          };
-          coreInteractionRef.current.ripples.push(newRipple);
+      {/* Use Case Carousel */}
+      <UseCaseCarousel />
 
-          // Pulse all particles toward center briefly
-          particlesRef.current.forEach(particle => {
-            const dx = (dimensions.width / 2) - particle.x;
-            const dy = (dimensions.height / 2) - particle.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            const force = 0.3;
-
-            particle.vx += (dx / distance) * force;
-            particle.vy += (dy / distance) * force;
-          });
-
-          console.log('Bloom interaction triggered core response:', bloom.content);
-        }}
-      />
-
-      {/* Hero Content */}
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 2,
-          minHeight: 'calc(100vh - 80px)', // Account for navbar
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          textAlign: 'center',
-          padding: `${spacing[8]}px ${spacing[6]}px`,
-          maxWidth: '1200px',
-          margin: '0 auto',
-        }}
-      >
-        {/* Central Crystalline Core */}
-        <div
-          style={{
-            marginBottom: spacing[8],
-            position: 'relative',
-            zIndex: 3,
-          }}
-        >
-          <CrystallineCore />
-        </div>
-
-        <p
-          style={{
-            fontFamily: typography.fonts.body,
-            fontSize: `${typography.fontSizes['2xl']}px`,
-            fontWeight: typography.fontWeights.normal,
-            color: colors.textLight,
-            marginBottom: spacing[8],
-            maxWidth: '800px',
-            lineHeight: typography.lineHeights.relaxed,
-            textAlign: 'center',
-          }}
-        >
-          Experience the intelligent, adaptive nature of our design-forward engineering through an interactive crystalline environment
-        </p>
-
-        <div
-          style={{
-            display: 'flex',
-            gap: spacing[4],
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-          }}
-        >
-          <button
-            style={{
-              padding: `${spacing[4]}px ${spacing[6]}px`,
-              background: `linear-gradient(135deg, ${colors.blue}, ${colors.purple})`,
-              color: colors.white,
-              border: 'none',
-              borderRadius: '12px',
-              fontFamily: typography.fonts.body,
-              fontSize: `${typography.fontSizes.lg}px`,
-              fontWeight: typography.fontWeights.semibold,
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 20px rgba(102, 153, 255, 0.3)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 8px 30px rgba(102, 153, 255, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(102, 153, 255, 0.3)';
-            }}
-          >
-            Explore Our Nexus
-          </button>
-
-          <button
-            style={{
-              padding: `${spacing[4]}px ${spacing[6]}px`,
-              background: 'rgba(255, 255, 255, 0.1)',
-              color: colors.text,
-              border: `2px solid ${colors.blue}`,
-              borderRadius: '12px',
-              fontFamily: typography.fonts.body,
-              fontSize: `${typography.fontSizes.lg}px`,
-              fontWeight: typography.fontWeights.semibold,
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              backdropFilter: 'blur(10px)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(102, 153, 255, 0.1)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }}
-          >
-            View Our Work
-          </button>
-        </div>
-      </div>
+      {/* Quick ROI Calculator */}
+      <QuickROICalculator />
 
       {/* Fallback for non-WebGL browsers */}
       {!isWebGLSupported && (

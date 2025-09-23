@@ -3,11 +3,12 @@ import { BlobMenu } from "@/app/components/BlobMenu";
 import { CommandPalette } from "@/app/components/CommandPalette";
 
 const navItems = [
-  { id: "home", label: "Home", href: "#home-section", active: false },
-  { id: "projects", label: "Projects", href: "#projects-section", active: false },
-  { id: "clients", label: "Clients", href: "#clients-section", active: false },
-  { id: "about", label: "About", href: "#about-section", active: false },
-  { id: "contact", label: "Contact", href: "#contact-section", active: false },
+  { id: "home", label: "Home", href: "#home-section", active: false as boolean | undefined },
+  { id: "projects", label: "Solutions", href: "#projects-section", active: false as boolean | undefined },
+  { id: "clients", label: "Partners", href: "#clients-section", active: false as boolean | undefined },
+  { id: "about", label: "About", href: "#about-section", active: false as boolean | undefined },
+  { id: "contact", label: "Connect", href: "#contact-section", active: false as boolean | undefined },
+  { id: "resume", label: "Resume", href: "/resume.pdf", active: false as boolean | undefined },
 ];
 
 const contextualSuggestions = [
@@ -50,7 +51,14 @@ const contextualSuggestions = [
 ];
 
 export default function Header() {
-  const handleItemClick = (item: any) => {
+  type NavItem = {
+    id: string;
+    label: string;
+    href: string;
+    active?: boolean;
+  };
+
+  const handleItemClick = (item: NavItem) => {
     const element = document.getElementById(item.href.substring(1));
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });

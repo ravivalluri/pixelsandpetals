@@ -1,17 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "@/app/context/ThemeContext";
 
 const navItems = [
   { label: "Home", id: "home-section" },
-  { label: "Projects", id: "projects-section" },
-  { label: "Clients", id: "clients-section" },
+  { label: "Solutions", id: "projects-section" },
+  { label: "Partners", id: "clients-section" },
   { label: "About", id: "about-section" },
-  { label: "Contact", id: "contact-section" },
+  { label: "Connect", id: "contact-section" },
   { label: "Download Resume", href: "/resume.pdf" },
 ];
 
 export const CommandPalette: React.FC = () => {
+  const { theme, colors } = useTheme();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
 
@@ -43,50 +45,52 @@ export const CommandPalette: React.FC = () => {
     setOpen(false);
   };
 
-  // Glass effect styles
+  // Glass effect styles that adapt to theme
   const glassEnhanced = {
-    background: 'rgba(255, 255, 255, 0.12)',
+    background: theme === 'dark' 
+      ? 'rgba(42, 47, 62, 0.3)' 
+      : 'rgba(255, 255, 255, 0.12)',
     backdropFilter: 'blur(16px) saturate(200%)',
     WebkitBackdropFilter: 'blur(16px) saturate(200%)',
-    border: '1px solid rgba(255, 255, 255, 0.25)',
+    border: theme === 'dark'
+      ? '1px solid rgba(102, 153, 255, 0.2)'
+      : '1px solid rgba(255, 255, 255, 0.25)',
     borderRadius: '20px',
-    boxShadow: '0 12px 48px rgba(31, 38, 135, 0.45)',
+    boxShadow: theme === 'dark'
+      ? '0 12px 48px rgba(102, 153, 255, 0.25)'
+      : '0 12px 48px rgba(31, 38, 135, 0.45)',
   };
   
   const glassSubtle = {
-    background: 'rgba(255, 255, 255, 0.05)',
+    background: theme === 'dark'
+      ? 'rgba(42, 47, 62, 0.2)'
+      : 'rgba(255, 255, 255, 0.05)',
     backdropFilter: 'blur(8px) saturate(150%)',
     WebkitBackdropFilter: 'blur(8px) saturate(150%)',
-    border: '1px solid rgba(255, 255, 255, 0.12)',
+    border: theme === 'dark'
+      ? '1px solid rgba(102, 153, 255, 0.15)'
+      : '1px solid rgba(255, 255, 255, 0.12)',
     borderRadius: '12px',
-    boxShadow: '0 4px 24px rgba(31, 38, 135, 0.25)',
-  };
-
-  const colors = {
-    primary: '#6699FF',
-    secondary: '#9966CC',
-    accent: '#FF6F61',
-    text: '#3C4A5C',
-    textLight: '#8DA3B5',
-    background: '#D9E8F5',
-    backgroundLight: '#F0F8FF',
+    boxShadow: theme === 'dark'
+      ? '0 4px 24px rgba(102, 153, 255, 0.15)'
+      : '0 4px 24px rgba(31, 38, 135, 0.25)',
   };
 
   const typography = {
     heading: {
       fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       fontWeight: '700',
-      color: '#3C4A5C',
+      color: colors.textPrimary,
     },
     body: {
       fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       fontWeight: '400',
-      color: '#3C4A5C',
+      color: colors.textPrimary,
     },
     caption: {
       fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       fontWeight: '400',
-      color: '#8DA3B5',
+      color: colors.textSubtle,
     }
   };
 
@@ -97,7 +101,9 @@ export const CommandPalette: React.FC = () => {
           style={{
             position: "fixed",
             inset: 0,
-            background: "rgba(60, 74, 92, 0.4)",
+            background: theme === 'dark' 
+              ? "rgba(10, 15, 25, 0.6)" 
+              : "rgba(60, 74, 92, 0.4)",
             backdropFilter: "blur(16px)",
             display: "flex",
             alignItems: "flex-start",
@@ -130,8 +136,10 @@ export const CommandPalette: React.FC = () => {
                 borderRadius: 8,
                 border: "none",
                 outline: "none",
-                background: "rgba(255, 255, 255, 0.08)",
-                color: colors.text,
+                background: theme === 'dark' 
+                  ? "rgba(42, 47, 62, 0.5)" 
+                  : "rgba(255, 255, 255, 0.08)",
+                color: colors.textPrimary,
                 fontSize: "1rem",
                 marginBottom: "12px",
                 fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -156,7 +164,7 @@ export const CommandPalette: React.FC = () => {
                         width: "100%",
                         padding: "10px",
                         borderRadius: 6,
-                        color: colors.text,
+                        color: colors.textPrimary,
                         textDecoration: "none",
                         transition: "background 0.2s",
                         background: "none",
@@ -167,7 +175,9 @@ export const CommandPalette: React.FC = () => {
                         fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
+                        e.currentTarget.style.background = theme === 'dark' 
+                          ? "rgba(255, 255, 255, 0.1)" 
+                          : "rgba(255, 255, 255, 0.1)";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background = "none";
@@ -183,14 +193,16 @@ export const CommandPalette: React.FC = () => {
                         width: "100%",
                         padding: "10px",
                         borderRadius: 6,
-                        color: colors.text,
+                        color: colors.textPrimary,
                         textDecoration: "none",
                         transition: "background 0.2s",
                         fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                       }}
                       onClick={() => setOpen(false)}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "rgba(255, 255, 255, 0.1)";
+                        e.currentTarget.style.background = theme === 'dark' 
+                          ? "rgba(255, 255, 255, 0.1)" 
+                          : "rgba(255, 255, 255, 0.1)";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background = "none";
@@ -204,7 +216,7 @@ export const CommandPalette: React.FC = () => {
               {filtered.length === 0 && (
                 <li style={{
                   padding: "10px",
-                  color: colors.textLight,
+                  color: colors.textSubtle,
                   fontSize: "0.9rem",
                   fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                 }}>No results</li>

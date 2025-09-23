@@ -23,6 +23,12 @@ interface AdaptiveLumenNavProps {
   onSearch?: (query: string) => void;
   contextualSuggestions?: ContextualSuggestion[];
   className?: string;
+  themeColors?: {
+    backgroundColor: string;
+    textColor: string;
+    borderColor: string;
+  };
+  themeToggle?: React.ReactNode;
 }
 
 export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
@@ -32,6 +38,8 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
   onSearch,
   contextualSuggestions = [],
   className = '',
+  themeColors,
+  themeToggle,
 }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -40,6 +48,7 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
   const [activeContextualSuggestion, setActiveContextualSuggestion] = useState<ContextualSuggestion | null>(null);
   const [timeOnPage, setTimeOnPage] = useState(0);
   const [logoGlow, setLogoGlow] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const navRef = useRef<HTMLElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -83,6 +92,16 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
     }
   }, [isSearchOpen]);
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const handleItemClick = (item: NavItem) => {
     onItemClick?.(item);
   };
@@ -116,15 +135,16 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
       className={`adaptive-lumen-nav ${className}`}
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
+        top: spacing[4],
+        left: spacing[4],
+        right: spacing[4],
         zIndex: 1000,
-        backgroundColor: `rgba(240, 248, 255, ${getNavOpacity()})`,
+        backgroundColor: themeColors?.backgroundColor || `rgba(240, 248, 255, ${getNavOpacity()})`,
         backdropFilter: getBackdropBlur(),
         WebkitBackdropFilter: getBackdropBlur(),
-        borderBottom: shouldShowLightRim() ? '1px solid rgba(102, 153, 255, 0.2)' : 'none',
-        boxShadow: shouldShowLightRim() ? '0 1px 0 rgba(102, 153, 255, 0.1)' : 'none',
+        border: shouldShowLightRim() ? `1px solid ${themeColors?.borderColor || 'rgba(102, 153, 255, 0.2)'}` : '1px solid rgba(102, 153, 255, 0.1)',
+        borderRadius: '50px',
+        boxShadow: shouldShowLightRim() ? '0 8px 32px rgba(102, 153, 255, 0.15)' : '0 4px 20px rgba(102, 153, 255, 0.1)',
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         padding: `${spacing[3]}px ${spacing[6]}px`,
       }}
@@ -155,7 +175,7 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
                 fontFamily: typography.fonts.heading,
                 fontSize: `${typography.fontSizes['2xl']}px`,
                 fontWeight: typography.fontWeights.bold,
-                color: colors.text,
+                color: themeColors?.textColor || colors.textDark,
                 transition: 'color 0.3s ease',
                 textShadow: logoGlow ? `0 0 20px rgba(153, 102, 204, 0.6)` : 'none',
               }}
@@ -236,7 +256,7 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
                 padding: spacing[2],
                 background: 'none',
                 border: 'none',
-                color: colors.text,
+                color: themeColors?.textColor || colors.textDark,
                 fontSize: '24px',
                 cursor: 'pointer',
                 borderRadius: '50%',
@@ -259,14 +279,15 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
           </div>
         ) : (
           <>
-            {/* Navigation Items */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: spacing[6],
-              }}
-            >
+            {/* Navigation Items - Hidden on mobile */}
+            {!isMobile && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: spacing[6],
+                }}
+              >
               {items.map((item) => (
                 <a
                   key={item.id}
@@ -280,7 +301,7 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
                   style={{
                     fontFamily: typography.fonts.body,
                     fontSize: `${typography.fontSizes.base}px`,
-                    color: item.active ? colors.purple : colors.text,
+                    color: item.active ? colors.primaryAccent : (themeColors?.textColor || colors.textDark),
                     textDecoration: 'none',
                     fontWeight: item.active ? typography.fontWeights.semibold : typography.fontWeights.medium,
                     position: 'relative',
@@ -326,18 +347,19 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
                   )}
                 </a>
               ))}
-            </div>
+              </div>
+            )}
 
             {/* Right Side Actions */}
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: spacing[4],
+                gap: spacing[3],
               }}
             >
-              {/* Contextual Orb */}
-              {activeContextualSuggestion && (
+              {/* Contextual Orb - Hidden on mobile */}
+              {!isMobile && activeContextualSuggestion && (
                 <div
                   onClick={activeContextualSuggestion.action}
                   style={{
@@ -367,7 +389,7 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
                     style={{
                       fontFamily: typography.fonts.body,
                       fontSize: `${typography.fontSizes.sm}px`,
-                      color: colors.purple,
+                      color: colors.primaryAccent,
                       fontWeight: typography.fontWeights.medium,
                     }}
                   >
@@ -376,13 +398,21 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
                 </div>
               )}
 
-              {/* Search Icon */}
-              <button
+              {/* Theme Toggle */}
+              {themeToggle && (
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  {themeToggle}
+                </div>
+              )}
+
+              {/* Search Icon - Hidden on mobile */}
+              {!isMobile && (
+                <button
                 onClick={() => setIsSearchOpen(true)}
                 style={{
                   background: 'none',
                   border: 'none',
-                  color: colors.text,
+                  color: themeColors?.textColor || colors.textDark,
                   fontSize: '20px',
                   cursor: 'pointer',
                   padding: spacing[2],
@@ -403,6 +433,7 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
               >
                 🔍
               </button>
+              )}
             </div>
           </>
         )}

@@ -1,0 +1,47 @@
+.heroCTA {
+  text-align: center;
+  padding: 64px 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.description {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin: 0 auto 48px;
+  max-width: 700px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.primaryButton,
+.secondaryButton {
+  padding: 16px 24px;
+  border: none;
+  border-radius: 12px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+  color: var(--text-primary);
+  box-shadow: 0 4px 20px rgba(102, 153, 255, 0.3);
+}
+
+.secondaryButton {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid var(--primary-accent);
+  backdrop-filter: blur(10px);
+}

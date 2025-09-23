@@ -56,10 +56,8 @@ export const QuickContactPanel: React.FC<QuickContactPanelProps> = ({
     boxShadow: `0 4px 20px ${colors.accentPop}40`,
     transition: 'all 0.3s ease',
     zIndex: 1000,
-    ':hover': {
-      transform: 'translateY(-50%) translateX(-4px)',
-      boxShadow: `0 6px 30px ${colors.accentPop}60`,
-    },
+    // ':hover' pseudo-selector is not supported in inline styles.
+    // Hover effects are handled via onMouseEnter and onMouseLeave below.
   };
 
   const panelStyles: React.CSSProperties = {
@@ -112,10 +110,7 @@ export const QuickContactPanel: React.FC<QuickContactPanelProps> = ({
     fontSize: typography.fontSizes.base,
     marginBottom: spacing[4],
     transition: 'border-color 0.3s ease',
-    ':focus': {
-      outline: 'none',
-      borderColor: colors.accentPop,
-    },
+    // Focus styles should be handled via CSS class or styled-components
   };
 
   const textareaStyles: React.CSSProperties = {
