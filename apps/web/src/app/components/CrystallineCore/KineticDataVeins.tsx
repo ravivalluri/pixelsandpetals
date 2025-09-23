@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTheme } from "@/app/context/ThemeContext";
-import { spacing, typography } from '@pixelsandpetals/ui';
+import { typography } from '@pixelsandpetals/ui';
+import styles from './KineticDataVeins.module.css';
 
 // Define reliable color palette for data veins that adapts to theme
 const veinColors = (
@@ -81,7 +82,6 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | null>(null);
   const timeRef = useRef(0);
-  const lastRippleTime = useRef(0);
   const audioContextRef = useRef<AudioContext | null>(null);
 
   const dataVeinsRef = useRef<DataVein[]>([]);
@@ -210,6 +210,7 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
     }
 
     dataVeinsRef.current = veins;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coreX, coreY, theme, themeColors, bloomContents]);
 
   // Initialize audio context for interaction sounds
@@ -217,6 +218,7 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
     if (typeof window !== 'undefined' && !audioContextRef.current) {
       try {
         audioContextRef.current = new (window.AudioContext || (window as Window & typeof globalThis & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!)();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         console.log('Audio not supported');
       }
@@ -260,7 +262,6 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
   // Render data vein with energy flow
   const renderDataVein = (ctx: CanvasRenderingContext2D, vein: DataVein) => {
     const { startX, startY, endX, endY, controlX1, controlY1, controlX2, controlY2 } = vein;
-    const veinColorsObj = veinColors(theme, themeColors);
 
     ctx.save();
 
@@ -538,6 +539,7 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
     coreRipplesRef.current = coreRipplesRef.current.filter(ripple => timeRef.current - ripple.time < 1000);
 
     animationRef.current = requestAnimationFrame(animate);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [theme, themeColors, dimensions]);
 
   // Initialize on mount
@@ -575,49 +577,18 @@ export const KineticDataVeins: React.FC<KineticDataVeinsProps> = ({
   }, [animate]);
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        top: '80px', // Account for navbar height
-        left: 0,
-        width: '100%',
-        height: 'calc(100vh - 80px)', // Match main canvas height
-        pointerEvents: 'auto',
-        zIndex: 1.5, // Behind hero content but above main canvas
-      }}
-    >
+    <div className={styles.container}>
       <canvas
         ref={canvasRef}
         onMouseMove={handleMouseMove}
         onClick={handleBloomClick}
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'block', // Remove inline spacing
-          cursor: hoveredBloom ? 'pointer' : 'default',
-          position: 'relative',
-          zIndex: 2, // Ensure this canvas is above the background canvas
-        }}
+        className={`${styles.canvas} ${hoveredBloom ? styles.canvasPointer : styles.canvasDefault}`}
       />
 
       {/* Bloom tooltip */}
       {hoveredBloom && (
         <div
-          style={{
-            position: 'absolute',
-            bottom: spacing[4],
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: theme === 'dark' ? 'rgba(42, 47, 62, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-            color: themeColors.textPrimary,
-            padding: `${spacing[2]}px ${spacing[4]}px`,
-            borderRadius: '8px',
-            boxShadow: theme === 'dark' 
-              ? '0 4px 20px rgba(102, 153, 255, 0.2)' 
-              : '0 4px 20px rgba(102, 153, 255, 0.3)',
-            backdropFilter: 'blur(10px)',
-            zIndex: 10,
-          }}
+          className={`${styles.tooltip} ${theme === 'dark' ? styles.tooltipDark : styles.tooltipLight}`}
         >
           {dataVeinsRef.current.find(v => v.bloom.id === hoveredBloom)?.bloom.content.description}
         </div>

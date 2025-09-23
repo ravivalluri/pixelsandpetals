@@ -5,7 +5,7 @@ import { useTheme } from "@/app/context/ThemeContext";
 import { ProjectsSection } from "@/app/components/ProjectsSection";
 import { ClientsSection } from "@/app/components/ClientsSection";
 import { AboutSection } from "@/app/components/AboutSection";
-import { ContactSection } from "@/app/components/ContactSection";
+import { ConnectionNexus } from "@/app/components/ConnectionNexus";
 import EnhancedHeader from "./components/EnhancedHeader";
 import { HeroCTA } from "@/app/components/HeroCTA/HeroCTA";
 import { LiquidGlassCursor } from "@/app/components/LiquidGlassCursor/LiquidGlassCursor";
@@ -52,7 +52,7 @@ export default function Home() {
       </SectionWrapper>
 
       <SectionWrapper section="contact" id="contact-section">
-        <ContactSection />
+        <ConnectionNexus />
       </SectionWrapper>
     </>
   );

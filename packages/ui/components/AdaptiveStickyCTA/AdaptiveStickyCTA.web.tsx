@@ -107,9 +107,6 @@ export const AdaptiveStickyCTA: React.FC<AdaptiveStickyCTAProps> = ({
     color: colors.white,
     cursor: 'pointer',
     transition: 'all 0.3s ease',
-    ':hover': {
-      transform: 'scale(1.1)',
-    },
   };
 
   const expandedContentStyles: React.CSSProperties = {

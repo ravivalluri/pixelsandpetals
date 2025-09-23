@@ -118,54 +118,8 @@ export const ClientsSection: React.FC = () => {
     },
   ];
 
-  // Glass effect styles that adapt to theme
-  const glassEnhanced = {
-    background: theme === 'dark' 
-      ? 'rgba(42, 47, 62, 0.3)' 
-      : 'rgba(255, 255, 255, 0.12)',
-    backdropFilter: 'blur(16px) saturate(200%)',
-    WebkitBackdropFilter: 'blur(16px) saturate(200%)',
-    border: theme === 'dark'
-      ? '1px solid rgba(102, 153, 255, 0.2)'
-      : '1px solid rgba(255, 255, 255, 0.25)',
-    borderRadius: '20px',
-    boxShadow: theme === 'dark'
-      ? '0 12px 48px rgba(102, 153, 255, 0.25)'
-      : '0 12px 48px rgba(31, 38, 135, 0.45)',
-  };
 
-  const glassSubtle = {
-    background: theme === 'dark'
-      ? 'rgba(42, 47, 62, 0.2)'
-      : 'rgba(255, 255, 255, 0.05)',
-    backdropFilter: 'blur(8px) saturate(150%)',
-    WebkitBackdropFilter: 'blur(8px) saturate(150%)',
-    border: theme === 'dark'
-      ? '1px solid rgba(102, 153, 255, 0.15)'
-      : '1px solid rgba(255, 255, 255, 0.12)',
-    borderRadius: '12px',
-    boxShadow: theme === 'dark'
-      ? '0 4px 24px rgba(102, 153, 255, 0.15)'
-      : '0 4px 24px rgba(31, 38, 135, 0.25)',
-  };
 
-  const typography = {
-    heading: {
-      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      fontWeight: '700',
-      color: colors.textPrimary,
-    },
-    body: {
-      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      fontWeight: '400',
-      color: colors.textPrimary,
-    },
-    caption: {
-      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-      fontWeight: '400',
-      color: colors.textSubtle,
-    }
-  };
 
   return (
     <section 
@@ -173,69 +127,36 @@ export const ClientsSection: React.FC = () => {
       className={styles.section}
       style={{
         background: `linear-gradient(135deg, ${colors.primaryBackground} 0%, ${colors.secondaryBackground} 100%)`,
-        padding: "80px 20px",
-        transition: 'background 0.3s ease',
       }}
     >
       <div className={styles.container}>
-        <h2 
-          className={styles.title}
+        <h2
+          className={`${styles.title} ${styles.sectionTitle}`}
           style={{
-            ...typography.heading,
-            fontSize: "2.5rem",
-            fontWeight: 700,
-            margin: "0 0 16px 0",
-            textAlign: "center",
             color: colors.textPrimary,
           }}
         >
           Our Clients
         </h2>
-        <p 
-          className={styles.subtitle}
+        <p
+          className={`${styles.subtitle} ${styles.sectionSubtitle}`}
           style={{
-            ...typography.body,
-            fontSize: "1.2rem",
             color: colors.textSubtle,
-            marginTop: "16px",
-            maxWidth: "600px",
-            margin: "0 auto 48px",
-            textAlign: "center",
           }}
         >
           Partnering with industry leaders and disruptors to engineer cloud-native platforms, enterprise integrations, and mission-critical applications.
         </p>
         <div className={styles.grid}>
           {clients.map((client, index) => {
-            // Create custom glass effect with client's color
-            const customGlassEnhanced = {
-              background: theme === 'dark'
-                ? `rgba(42, 47, 62, 0.3)`
-                : `rgba(255, 255, 255, 0.12)`,
-              backdropFilter: 'blur(16px) saturate(200%)',
-              WebkitBackdropFilter: 'blur(16px) saturate(200%)',
-              border: `1px solid ${client.color}40`,
-              borderRadius: '20px',
-              boxShadow: theme === 'dark'
-                ? `0 12px 48px ${client.color}25`
-                : `0 12px 48px ${client.color}35`,
-              position: 'relative' as const,
-              overflow: 'hidden' as const,
-            };
-
             return (
               <div
                 key={index}
-                className={styles.clientCard}
+                className={`${styles.clientCard} ${theme === 'dark' ? styles.clientCardDark : styles.clientCardLight}`}
                 style={{
-                  ...customGlassEnhanced,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  padding: "32px",
-                  borderRadius: "20px",
-                  transition: "all 0.3s ease",
-                  cursor: "pointer",
+                  border: `1px solid ${client.color}40`,
+                  boxShadow: theme === 'dark'
+                    ? `0 12px 48px ${client.color}25`
+                    : `0 12px 48px ${client.color}35`,
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-4px)";
@@ -254,49 +175,24 @@ export const ClientsSection: React.FC = () => {
               >
                 {/* Background gradient accent */}
                 <div
+                  className={styles.clientBackground}
                   style={{
-                    position: "absolute",
-                    top: 0,
-                    right: 0,
-                    width: "100px",
-                    height: "100px",
                     background: `linear-gradient(135deg, ${client.color}20, transparent)`,
-                    borderRadius: "0 20px 0 100px",
-                    pointerEvents: "none",
                   }}
                 />
 
-                <div
-                  className={styles.logoContainer}
-                  style={{
-                    marginBottom: "24px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    position: "relative",
-                  }}
-                >
+                <div className={styles.logoContainer}>
                   {/* Logo background circle */}
                   <div
+                    className={styles.logoBackground}
                     style={{
-                      width: "100px",
-                      height: "100px",
-                      borderRadius: "50%",
                       background: `linear-gradient(135deg, ${client.color}20, ${client.color}10)`,
                       border: `2px solid ${client.color}40`,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "4px",
                     }}
                   >
                     <div
+                      className={styles.logoInner}
                       style={{
-                        width: "80px",
-                        height: "80px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
                         color: client.color,
                         filter: `drop-shadow(0 2px 8px ${client.color}40)`,
                       }}
@@ -305,40 +201,27 @@ export const ClientsSection: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                <div style={{ textAlign: "center", position: "relative" }}>
+                <div className={styles.clientInfo}>
                   <h3
+                    className={styles.clientName}
                     style={{
-                      ...typography.heading,
-                      fontSize: "1.5rem",
-                      fontWeight: 600,
-                      margin: "0 0 8px 0",
                       color: colors.textPrimary,
-                      position: "relative",
                     }}
                   >
                     {client.name}
                   </h3>
                   <p
+                    className={styles.clientIndustry}
                     style={{
-                      ...typography.caption,
-                      fontSize: "0.9rem",
                       color: client.color,
-                      margin: "0 0 16px 0",
-                      textTransform: "uppercase",
-                      letterSpacing: "1px",
-                      fontWeight: "600",
                     }}
                   >
                     {client.industry}
                   </p>
                   <p
+                    className={styles.clientTestimonial}
                     style={{
-                      ...typography.body,
-                      fontSize: "1rem",
                       color: colors.textSubtle,
-                      fontStyle: "italic",
-                      lineHeight: 1.6,
-                      position: "relative",
                     }}
                   >
                     &quot;{client.testimonial}&quot;
@@ -347,14 +230,9 @@ export const ClientsSection: React.FC = () => {
 
                 {/* Bottom accent line */}
                 <div
+                  className={styles.clientAccentLine}
                   style={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    height: "3px",
                     background: `linear-gradient(90deg, ${client.color}, transparent)`,
-                    borderRadius: "0 0 20px 20px",
                   }}
                 />
               </div>

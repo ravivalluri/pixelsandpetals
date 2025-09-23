@@ -249,7 +249,7 @@ export const InteractiveHero: React.FC<InteractiveHeroProps> = ({
             {primaryAction && (
               <Button
                 {...primaryAction}
-                style={{ ...buttonStyles, ...primaryAction.style }}
+                style={buttonStyles}
               />
             )}
 
@@ -257,7 +257,7 @@ export const InteractiveHero: React.FC<InteractiveHeroProps> = ({
               <Button
                 {...secondaryAction}
                 variant="secondary"
-                style={{ ...buttonStyles, ...secondaryAction.style }}
+                style={buttonStyles}
               />
             )}
           </div>

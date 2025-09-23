@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
-import { spacing, typography } from '@pixelsandpetals/ui';
 import { useTheme } from '../../context/ThemeContext';
+import styles from './CrystallineCoreNexus.module.css';
 import { QuickROICalculator } from '../QuickROICalculator/QuickROICalculator';
 import { UseCaseCarousel } from '../UseCaseCarousel/UseCaseCarousel';
 
@@ -122,6 +122,7 @@ export const CrystallineCoreNexus: React.FC = () => {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
       return !!gl;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       return false;
     }
@@ -252,6 +253,7 @@ export const CrystallineCoreNexus: React.FC = () => {
   };
 
   // Render ethereal waves
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const renderWaves = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
     wavesRef.current.forEach((wave) => {
       ctx.save();
@@ -326,17 +328,17 @@ export const CrystallineCoreNexus: React.FC = () => {
   };
 
   // Handle mouse movement with throttling
-  const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  // const handleMouseMove = (event: React.MouseEvent<HTMLCanvasElement>) => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
 
-    const rect = canvas.getBoundingClientRect();
-    mouseRef.current = {
-      x: event.clientX - rect.left,
-      y: event.clientY - rect.top,
-      isMoving: true,
-    };
-  };
+  //   const rect = canvas.getBoundingClientRect();
+  //   mouseRef.current = {
+  //     x: event.clientX - rect.left,
+  //     y: event.clientY - rect.top,
+  //     isMoving: true,
+  //   };
+  // };
 
   // Handle window resize
   const handleResize = () => {
@@ -363,6 +365,7 @@ export const CrystallineCoreNexus: React.FC = () => {
       initializeParticles(dimensions.width, dimensions.height);
       initializeWaves(dimensions.width, dimensions.height);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dimensions]);
 
   // Start animation
@@ -376,6 +379,7 @@ export const CrystallineCoreNexus: React.FC = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dimensions]);
 
   // Canvas setup with proper pixel dimensions
@@ -397,14 +401,7 @@ export const CrystallineCoreNexus: React.FC = () => {
 
   return (
     <div
-      style={{
-        position: 'relative',
-        width: '100vw',
-        minHeight: '100vh',
-        paddingTop: '80px', // Account for navbar height
-        overflow: 'hidden',
-        background: `linear-gradient(135deg, ${colors.primaryBackground} 0%, ${colors.secondaryBackground} 50%, ${colors.primaryBackground} 100%)`,
-      }}
+      className={`${styles.container} ${theme === 'dark' ? styles.containerDark : styles.containerLight}`}
     >
 
 
@@ -416,18 +413,7 @@ export const CrystallineCoreNexus: React.FC = () => {
 
       {/* Fallback for non-WebGL browsers */}
       {!isWebGLSupported && (
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            background: `radial-gradient(circle at 30% 20%, rgba(102, 153, 255, 0.1) 0%, transparent 50%),
-                         radial-gradient(circle at 70% 80%, rgba(153, 102, 204, 0.1) 0%, transparent 50%)`,
-            zIndex: 0,
-          }}
-        />
+        <div className={styles.fallbackBackground} />
       )}
     </div>
   );

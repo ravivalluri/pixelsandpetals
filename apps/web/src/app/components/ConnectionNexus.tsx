@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "@/app/context/ThemeContext";
 import styles from './ConnectionNexus/ConnectionNexus.module.css';
+import emailjs from '@emailjs/browser';
+import { FaLinkedin, FaGithub, FaMedium, FaStackOverflow, FaNewspaper, FaEnvelope, FaPhone, FaBuilding } from 'react-icons/fa';
 
 export const ConnectionNexus: React.FC = () => {
   const { theme, colors } = useTheme();
@@ -14,7 +16,12 @@ export const ConnectionNexus: React.FC = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const [focusedField, setFocusedField] = useState<string | null>(null);
+
+  const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
+  const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
+  const EMAILJS_PUBLIC_KEY = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -32,25 +39,54 @@ export const ConnectionNexus: React.FC = () => {
     setFocusedField(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus("idle");
-    
-    // Simulate form submission
-    setTimeout(() => {
+    setSubmitStatus('idle');
+    setErrorMessage("");
+
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      setSubmitStatus('error');
+      setErrorMessage("Please fill in all required fields.");
       setIsSubmitting(false);
-      setSubmitStatus("success");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      setSubmitStatus('error');
+      setErrorMessage("Please enter a valid email address.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          subject: formData.subject || "Contact Form Submission",
+          message: formData.message,
+          to_name: "Pixels & Petals",
+        },
+        EMAILJS_PUBLIC_KEY
+      );
+
+      setSubmitStatus('success');
       setFormData({ name: "", email: "", subject: "", message: "" });
-      
-      // Reset status after 3 seconds
-      setTimeout(() => {
-        setSubmitStatus("idle");
-      }, 3000);
-    }, 1500);
+
+      setTimeout(() => setSubmitStatus('idle'), 5000);
+    } catch (error) {
+      console.error('EmailJS Error:', error);
+      setSubmitStatus('error');
+      setErrorMessage("Failed to send message. Please try again or contact us directly.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // Glass effect styles that adapt to theme
   const glassEnhanced = {
     background: theme === 'dark' 
       ? 'rgba(42, 47, 62, 0.3)' 
@@ -102,22 +138,30 @@ export const ConnectionNexus: React.FC = () => {
   const contactMethods = [
     {
       title: "Email",
-      value: "hello@pixelsandpetals.com",
-      icon: "✉️",
-      action: "mailto:hello@pixelsandpetals.com"
+      value: "info@pixelspetals.com",
+      icon: <FaEnvelope />,
+      action: "mailto:info@pixelspetals.com"
     },
     {
       title: "Phone",
-      value: "+1 (555) 123-4567",
-      icon: "📞",
-      action: "tel:+15551234567"
+      value: "+1 (619) 609-6099",
+      icon: <FaPhone />,
+      action: "tel:+1 (619) 609-6099"
     },
     {
       title: "Office",
-      value: "123 Innovation Blvd, San Francisco, CA",
-      icon: "🏢",
+      value: "San Diego, CA",
+      icon: <FaBuilding />,
       action: "#"
     }
+  ];
+
+  const socialLinks = [
+    { name: "LinkedIn", icon: <FaLinkedin />, url: "https://www.linkedin.com/in/ravivalluri/" },
+    { name: "GitHub", icon: <FaGithub />, url: "https://github.com/ravivalluri" },
+    { name: "Medium", icon: <FaMedium />, url: "https://medium.com/@ravivalluri" },
+    { name: "SubStack", icon: <FaNewspaper />, url: "https://substack.com/@bloodfeather?"},
+    { name: "StackOverflow", icon: <FaStackOverflow />, url: "https://stackoverflow.com/users/10908679/compileravi"}
   ];
 
   return (
@@ -434,35 +478,14 @@ export const ConnectionNexus: React.FC = () => {
                 )}
               </motion.button>
               
-              {/* Status message */}
-              {submitStatus !== "idle" && (
-                <div 
-                  className={styles.statusMessage}
+              {submitStatus === 'error' && errorMessage && (
+                <div
+                  className={`${styles.statusMessage} ${styles.statusMessageError}`}
                   style={{
-                    position: "absolute",
-                    bottom: "-40px",
-                    left: 0,
-                    width: "100%",
-                    textAlign: "center",
-                    fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                    fontWeight: 600,
-                    padding: "12px 16px",
-                    borderRadius: "12px",
-                    backdropFilter: "blur(10px)",
-                    background: submitStatus === "success" 
-                      ? theme === 'dark' 
-                        ? 'rgba(39, 167, 69, 0.2)' 
-                        : 'rgba(39, 167, 69, 0.15)'
-                      : theme === 'dark' 
-                        ? 'rgba(220, 53, 69, 0.2)' 
-                        : 'rgba(220, 53, 69, 0.15)',
-                    color: submitStatus === "success" ? '#28a745' : '#dc3545',
-                    border: `1px solid ${submitStatus === "success" ? '#28a745' : '#dc3545'}40`,
+                    color: theme === 'dark' ? '#f87171' : '#dc2626',
                   }}
                 >
-                  {submitStatus === "success" 
-                    ? "Message sent successfully!" 
-                    : "There was an error sending your message. Please try again."}
+                    {errorMessage}
                 </div>
               )}
             </form>
@@ -498,7 +521,7 @@ export const ConnectionNexus: React.FC = () => {
                     whileHover={{ y: -5 }}
                   >
                     <div style={{ fontSize: "1.8rem" }}>{method.icon}</div>
-                    <div style={{ textAlign: "center" }}>
+                    <div style={{ textAlign: "left" }}>
                       <h4 
                         className={styles.methodTitle}
                         style={{
@@ -511,17 +534,19 @@ export const ConnectionNexus: React.FC = () => {
                       >
                         {method.title}
                       </h4>
-                      <p 
+                      <a
+                        href={method.action}
                         className={styles.methodValue}
                         style={{
                           ...typography.body,
                           fontSize: "0.95rem",
                           color: colors.textSubtle,
                           margin: 0,
+                          textDecoration: 'none'
                         }}
                       >
                         {method.value}
-                      </p>
+                      </a>
                     </div>
                   </motion.div>
                 ))}
@@ -553,20 +578,52 @@ export const ConnectionNexus: React.FC = () => {
                 }}
                 whileHover={{ scale: 1.05 }}
               >
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: "3rem", marginBottom: "12px" }}>📍</div>
-                  <p 
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d429158.3724717658!2d-117.389534!3d32.8245525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80d9530fad921e4b%3A0xd3a21fdfd15df79!2sSan%20Diego%2C%20CA!5e0!3m2!1sen!2sus!4v1678886358539!5m2!1sen!2sus"
+                  width="100%"
+                  height="200"
+                  style={{ border:0, borderRadius: '12px' }}
+                  allowFullScreen={false}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </motion.div>
+            </div>
+            
+            {/* Social Links */}
+            <div>
+              <h3
+                style={{
+                  ...typography.heading,
+                  fontSize: "1.8rem",
+                  fontWeight: 600,
+                  margin: "16px 0 16px 0",
+                  color: colors.textPrimary,
+                }}
+              >
+                Connect
+              </h3>
+              <div className={styles.socialLinksContainer} style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                {socialLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.socialLinkItem}
                     style={{
-                      ...typography.body,
-                      color: colors.textSubtle,
-                      fontSize: "1rem",
-                      margin: 0,
+                      ...glassSubtle,
+                      padding: '12px',
+                      borderRadius: '12px',
+                      color: colors.textPrimary,
+                      display: 'inline-block',
+                      fontSize: '1.5rem',
                     }}
                   >
-                    Interactive Map
-                  </p>
-                </div>
-              </motion.div>
+                    {link.icon}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
         </div>

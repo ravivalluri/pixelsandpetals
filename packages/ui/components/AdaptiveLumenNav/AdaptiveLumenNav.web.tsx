@@ -319,7 +319,7 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
                       bottom: 0,
                       left: '50%',
                       height: '2px',
-                      backgroundColor: colors.blue,
+                      backgroundColor: colors.primaryAccent,
                       borderRadius: '1px',
                       transform: 'translateX(-50%)',
                       width: item.active ? '100%' : (hoveredItem === item.id ? '100%' : '0%'),

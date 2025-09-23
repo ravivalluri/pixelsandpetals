@@ -26,6 +26,27 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  -webkit-backdrop-filter: blur(16px) saturate(200%);
+  backdrop-filter: blur(16px) saturate(200%);
+  border-radius: 20px;
+}
+
+.menuButtonDark {
+  background: rgba(42, 47, 62, 0.3);
+  border: 1px solid rgba(102, 153, 255, 0.2);
+}
+
+.menuButtonLight {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.menuButtonMobile {
+  border: 2px solid rgba(102, 153, 255, 0.4);
+}
+
+.menuButtonMobile.menuButtonLight {
+  border: 2px solid rgba(102, 153, 255, 0.3);
 }
 
 .menuContent {
@@ -34,6 +55,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.menuContentDark {
+  background: rgba(10, 15, 25, 0.8);
+}
+
+.menuContentLight {
+  background: rgba(60, 74, 92, 0.6);
 }
 
 .blobMenu {
@@ -53,15 +84,139 @@
 
 .menuItem {
   background: none;
-  border: none;
+  border: 2px solid transparent;
   cursor: pointer;
-  padding: 10px 20px;
-  border-radius: 12px;
+  padding: 20px 40px;
+  border-radius: 16px;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-weight: 600;
-  font-size: 1.4rem;
+  font-weight: 700;
+  font-size: 2rem;
   text-align: center;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
-  display: block;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.menuItemDark:hover {
+  background: rgba(102, 153, 255, 0.1);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 32px rgba(102, 153, 255, 0.3);
+}
+
+.menuItemLight:hover {
+  background: rgba(102, 153, 255, 0.08);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 32px rgba(102, 153, 255, 0.2);
+}
+
+/* Close button styles */
+.closeButton {
+  position: fixed;
+  top: 32px;
+  right: 32px;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  z-index: 10001;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.closeButtonDark {
+  background: rgba(42, 47, 62, 0.8);
+  border: 1px solid rgba(102, 153, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.closeButtonLight {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.closeButtonDark:hover {
+  background: rgba(42, 47, 62, 1);
+  transform: scale(1.1);
+}
+
+.closeButtonLight:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+/* Menu icon styles */
+.menuIcon {
+  font-weight: normal;
+  font-size: 22px;
+}
+
+@media (max-width: 768px) {
+  .menuIcon {
+    font-weight: bold;
+    font-size: 26px;
+  }
+}
+
+/* Full screen blob menu */
+.fullScreenMenu {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  border-radius: 0;
+  padding: 80px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  box-shadow: none;
+}
+
+.blobMenuDark {
+  background: rgba(10, 15, 25, 0.95);
+}
+
+.blobMenuLight {
+  background: rgba(245, 245, 245, 0.95);
+}
+
+/* Menu list layout */
+.menuListContainer {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+
+/* Menu list item */
+.menuListItem {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Footer styles */
+.menuFooter {
+  margin-top: auto;
+  padding-top: 40px;
+  text-align: center;
+}
+
+.footerText {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 400;
+  font-size: 0.9rem;
+  margin: 0;
 }

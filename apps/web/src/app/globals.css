@@ -20,5 +20,4 @@ body {
   min-height: 100vh;
 }
 
-/* Import liquid glass design system styles */
-@import "./globals-liquid-glass.css";
+

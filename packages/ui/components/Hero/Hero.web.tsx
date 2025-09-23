@@ -113,7 +113,7 @@ export const Hero: React.FC<HeroProps> = ({
             {primaryAction && (
               <Button
                 {...primaryAction}
-                style={{ ...buttonStyles, ...primaryAction.style }}
+                style={buttonStyles}
               />
             )}
 
@@ -121,7 +121,7 @@ export const Hero: React.FC<HeroProps> = ({
               <Button
                 {...secondaryAction}
                 variant="secondary"
-                style={{ ...buttonStyles, ...secondaryAction.style }}
+                style={buttonStyles}
               />
             )}
           </div>

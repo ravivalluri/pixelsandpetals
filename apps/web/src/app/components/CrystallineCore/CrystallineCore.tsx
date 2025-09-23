@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from 'react';
 import { useTheme } from "@/app/context/ThemeContext";
-import { colors, spacing, typography } from '@pixelsandpetals/ui';
+import styles from './CrystallineCore.module.css';
 
 interface CrystalFacet {
   vertices: [number, number, number][];
@@ -45,7 +45,6 @@ export const CrystallineCore: React.FC = () => {
   });
 
   const [dimensions, setDimensions] = useState({ width: 500, height: 500 });
-  const [facets, setFacets] = useState<CrystalFacet[]>([]);
   const [isHighPerformance, setIsHighPerformance] = useState(true);
 
   // Adaptive content configurations
@@ -265,7 +264,6 @@ export const CrystallineCore: React.FC = () => {
       // Apply rotation
       const cosX = Math.cos(rotation.x), sinX = Math.sin(rotation.x);
       const cosY = Math.cos(rotation.y), sinY = Math.sin(rotation.y);
-      const cosZ = Math.cos(rotation.z), sinZ = Math.sin(rotation.z);
 
       // Rotate around Y axis
       const newX = x * cosY + z * sinY;
@@ -332,9 +330,6 @@ export const CrystallineCore: React.FC = () => {
 
   // Render text projection onto crystal
   const renderTextProjection = (ctx: CanvasRenderingContext2D) => {
-    const centerX = dimensions.width / 2;
-    const centerY = dimensions.height / 2;
-
     ctx.save();
 
     // No text rendering - crystal only
@@ -400,6 +395,7 @@ export const CrystallineCore: React.FC = () => {
 
     const performanceLevel = detectPerformance();
     setIsHighPerformance(performanceLevel);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Handle resize
@@ -429,28 +425,14 @@ export const CrystallineCore: React.FC = () => {
         cancelAnimationFrame(animationRef.current);
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [adaptiveContent, dimensions, theme, themeColors]);
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-        zIndex: 3,
-        minHeight: '600px',
-      }}
-    >
+    <div className={styles.container}>
       <canvas
         ref={canvasRef}
-        style={{
-          filter: theme === 'dark' 
-            ? 'drop-shadow(0 10px 30px rgba(102, 153, 255, 0.2))' 
-            : 'drop-shadow(0 10px 30px rgba(102, 153, 255, 0.3))',
-          marginBottom: spacing[6],
-        }}
+        className={`${styles.canvas} ${theme === 'dark' ? styles.canvasDark : styles.canvasLight}`}
       />
     </div>
   );

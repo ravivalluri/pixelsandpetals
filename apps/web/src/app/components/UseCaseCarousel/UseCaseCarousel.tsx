@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from "@/app/context/ThemeContext";
-import { spacing, typography } from '@pixelsandpetals/ui';
 import styles from './UseCaseCarousel.module.css';
 
 interface UseCase {
@@ -233,18 +232,6 @@ export const UseCaseCarousel: React.FC = () => {
     return gradient;
   };
 
-  // Create a dark mode compatible glass effect
-  const getGlassEffect = () => {
-    return theme === 'dark' 
-      ? 'rgba(42, 47, 62, 0.3)' 
-      : 'rgba(255, 255, 255, 0.1)';
-  };
-
-  // Create a dark mode compatible text color
-  const getTextColor = (isSubtle: boolean = false) => {
-    return isSubtle ? colors.textSubtle : colors.textPrimary;
-  };
-
   return (
     <div
       ref={carouselRef}
@@ -253,20 +240,12 @@ export const UseCaseCarousel: React.FC = () => {
       {/* Header */}
       <div className={styles.header}>
         <h2
-          className={styles.title}
-          style={{
-            fontSize: `${typography.fontSizes['3xl']}px`,
-            color: getTextColor(),
-          }}
+          className={`${styles.title} ${theme === 'dark' ? styles.titleDark : styles.titleLight}`}
         >
           Real-World Solutions
         </h2>
         <p
-          className={styles.subtitle}
-          style={{
-            fontSize: `${typography.fontSizes.lg}px`,
-            color: getTextColor(true),
-          }}
+          className={`${styles.subtitle} ${theme === 'dark' ? styles.subtitleDark : styles.subtitleLight}`}
         >
          From system design to cloud deployment, we deliver cutting-edge software that solves complex business challenges at scale.
         </p>
@@ -300,46 +279,27 @@ export const UseCaseCarousel: React.FC = () => {
             >
               {/* Card Content */}
               <div
-                className={styles.cardContent}
-                style={{
-                  background: getGlassEffect(),
-                }}
+                className={`${styles.cardContent} ${theme === 'dark' ? styles.cardContentDark : styles.cardContentLight}`}
               >
                 {/* Top Section */}
                 <div>
                   {/* Icon */}
                   <div
-                    className={styles.iconWrapper}
-                    style={{
-                      color: theme === 'dark' ? 'white' : 'white',
-                      transform: index === currentIndex ? 'scale(1)' : 'scale(0.9)',
-                    }}
+                    className={`${styles.iconWrapper} ${index === currentIndex ? styles.iconActive : styles.iconInactive}`}
                   >
                     {useCase.icon}
                   </div>
 
                   {/* Title */}
                   <h3
-                    className={styles.titleWrapper}
-                    style={{
-                      fontSize: `${typography.fontSizes['2xl']}px`,
-                      color: theme === 'dark' ? 'white' : 'white',
-                      transform: index === currentIndex ? 'translateY(0)' : 'translateY(20px)',
-                      opacity: index === currentIndex ? 1 : 0.8,
-                    }}
+                    className={`${styles.titleWrapper} ${index === currentIndex ? styles.titleActive : styles.titleInactive}`}
                   >
                     {useCase.title}
                   </h3>
 
                   {/* Description */}
                   <p
-                    className={styles.descriptionWrapper}
-                    style={{
-                      fontSize: `${typography.fontSizes.base}px`,
-                      color: theme === 'dark' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                      transform: index === currentIndex ? 'translateY(0)' : 'translateY(20px)',
-                      opacity: index === currentIndex ? 1 : 0.8,
-                    }}
+                    className={`${styles.descriptionWrapper} ${index === currentIndex ? styles.descriptionActive : styles.descriptionInactive}`}
                   >
                     {useCase.description}
                   </p>
@@ -353,12 +313,8 @@ export const UseCaseCarousel: React.FC = () => {
                     {useCase.benefits.map((benefit, benefitIndex) => (
                       <span
                         key={benefit}
-                        className={styles.benefitTag}
+                        className={`${styles.benefitTag} ${theme === 'dark' ? styles.benefitTagDark : styles.benefitTagLight} ${index === currentIndex ? styles.benefitTagActive : styles.benefitTagInactive}`}
                         style={{
-                          background: theme === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.2)',
-                          color: theme === 'dark' ? 'white' : 'white',
-                          transform: index === currentIndex ? 'translateY(0)' : 'translateY(20px)',
-                          opacity: index === currentIndex ? 1 : 0.8,
                           transition: `all 0.6s ease ${0.2 + benefitIndex * 0.1}s`,
                         }}
                       >
@@ -370,22 +326,7 @@ export const UseCaseCarousel: React.FC = () => {
                   {/* CTA */}
                   <button
                     type="button"
-                    className={styles.ctaButton}
-                    style={{
-                      background: theme === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.2)',
-                      border: theme === 'dark' ? '1px solid rgba(255, 255, 255, 0.2)' : '1px solid rgba(255, 255, 255, 0.3)',
-                      color: theme === 'dark' ? 'white' : 'white',
-                      transform: index === currentIndex ? 'translateY(0)' : 'translateY(20px)',
-                      opacity: index === currentIndex ? 1 : 0.8,
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = theme === 'dark' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.3)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = theme === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.2)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}
+                    className={`${styles.ctaButton} ${theme === 'dark' ? styles.ctaButtonDark : styles.ctaButtonLight} ${index === currentIndex ? styles.ctaButtonActive : styles.ctaButtonInactive}`}
                   >
                     Learn More →
                   </button>
@@ -399,19 +340,7 @@ export const UseCaseCarousel: React.FC = () => {
         <button
           type="button"
           onClick={prevSlide}
-          className={`${styles.arrowButton} ${styles.prevButton}`}
-          style={{
-            background: theme === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.2)',
-            color: theme === 'dark' ? 'white' : 'white',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.3)';
-            e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.2)';
-            e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-          }}
+          className={`${styles.arrowButton} ${styles.prevButton} ${theme === 'dark' ? styles.arrowButtonDark : styles.arrowButtonLight}`}
         >
           ←
         </button>
@@ -419,19 +348,7 @@ export const UseCaseCarousel: React.FC = () => {
         <button
           type="button"
           onClick={nextSlide}
-          className={`${styles.arrowButton} ${styles.nextButton}`}
-          style={{
-            background: theme === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.2)',
-            color: theme === 'dark' ? 'white' : 'white',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? 'rgba(255, 255, 255, 0.25)' : 'rgba(255, 255, 255, 0.3)';
-            e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = theme === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.2)';
-            e.currentTarget.style.transform = 'translateY(-50%) scale(1)';
-          }}
+          className={`${styles.arrowButton} ${styles.nextButton} ${theme === 'dark' ? styles.arrowButtonDark : styles.arrowButtonLight}`}
         >
           →
         </button>

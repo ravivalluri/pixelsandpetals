@@ -1,0 +1,24 @@
+/* CrystallineCore Component Styles */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 3;
+  min-height: 600px;
+}
+
+.canvas {
+  margin-bottom: 32px; /* spacing[6] equivalent */
+}
+
+/* Theme-based canvas filters */
+.canvasDark {
+  filter: drop-shadow(0 10px 30px rgba(102, 153, 255, 0.2));
+}
+
+.canvasLight {
+  filter: drop-shadow(0 10px 30px rgba(102, 153, 255, 0.3));
+}
