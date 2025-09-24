@@ -1,402 +1,337 @@
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import { useState } from 'react';
-import { Navigation, ProjectPortalQuest, SolutionFlow, ProjectConstellation, Card, Button, colors } from '@pixelsandpetals/ui';
+import { colors, spacing } from '@pixelsandpetals/ui';
+import { ProjectsSection } from '@pixelsandpetals/ui/components/ProjectsSection';
+import { LiquidGlassHeader } from './components/LiquidGlassHeader';
 
-export default function App() {
-  const [activeNavItem, setActiveNavItem] = useState('home');
+const { width } = Dimensions.get('window');
 
-  const dataShards = [
-    {
-      id: 'ai-innovation',
-      title: 'AI & Innovation',
-      description: 'Cutting-edge AI solutions that transform businesses',
-      icon: '🤖',
-      onInteract: () => console.log('AI Innovation shard activated'),
-    },
-    {
-      id: 'ui-ux',
-      title: 'UI/UX Design',
-      description: 'Beautiful, intuitive interfaces that users love',
-      icon: '🎨',
-      onInteract: () => console.log('UI/UX shard activated'),
-    },
-    {
-      id: 'growth',
-      title: 'Growth Strategy',
-      description: 'Data-driven strategies for exponential growth',
-      icon: '📈',
-      onInteract: () => console.log('Growth shard activated'),
-    },
-    {
-      id: 'mobile',
-      title: 'Mobile Development',
-      description: 'Cross-platform mobile apps that perform',
-      icon: '📱',
-      onInteract: () => console.log('Mobile shard activated'),
-    },
-    {
-      id: 'web',
-      title: 'Web Development',
-      description: 'Modern web applications built for scale',
-      icon: '🌐',
-      onInteract: () => console.log('Web shard activated'),
-    },
-  ];
+// Sophisticated Hero Section Component with full web app features
+const SophisticatedHeroSection = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const navigationItems = [
+  // Use cases matching the web app exactly
+  const useCases = [
     {
-      label: 'Home',
-      onPress: () => setActiveNavItem('home'),
-      active: activeNavItem === 'home',
+      id: 'data-pipelines',
+      title: 'Automate Data Pipelines',
+      description: 'Streamline your data workflows with intelligent automation that processes, transforms, and delivers insights in real-time.',
+      benefits: ['95% faster processing', 'Zero manual errors', 'Real-time insights'],
+      accentColor: colors.light.primaryAccent,
     },
     {
-      label: 'Services',
-      onPress: () => setActiveNavItem('services'),
-      active: activeNavItem === 'services',
+      id: 'ai-dashboards',
+      title: 'AI-Powered Dashboards',
+      description: 'Transform raw data into intelligent, predictive dashboards that anticipate trends and recommend actions.',
+      benefits: ['Predictive analytics', 'Smart recommendations', 'Interactive visualizations'],
+      accentColor: colors.light.secondaryAccent,
     },
     {
-      label: 'Portfolio',
-      onPress: () => setActiveNavItem('portfolio'),
-      active: activeNavItem === 'portfolio',
-    },
-    {
-      label: 'About',
-      onPress: () => setActiveNavItem('about'),
-      active: activeNavItem === 'about',
-    },
-    {
-      label: 'Contact',
-      onPress: () => setActiveNavItem('contact'),
-      active: activeNavItem === 'contact',
-    },
-  ];
-
-  const serviceOrbs = [
-    {
-      id: 'ai-innovation',
-      title: 'AI & Innovation',
-      icon: '🤖',
-      oneLiner: 'Cutting-edge AI solutions that transform businesses',
-      description: 'Harness the power of artificial intelligence to automate processes, enhance decision-making, and create intelligent user experiences that adapt and evolve.',
-      benefits: [
-        'Machine Learning Integration',
-        'Natural Language Processing',
-        'Computer Vision Solutions',
-        'Predictive Analytics',
-        'Intelligent Automation',
-        'AI-Powered Recommendations'
-      ],
-      connections: ['ui-ux', 'web-development'],
-    },
-    {
-      id: 'ui-ux',
-      title: 'UI/UX Design',
-      icon: '🎨',
-      oneLiner: 'Beautiful, intuitive interfaces that users love',
-      description: 'Create stunning, user-centered designs that combine aesthetic excellence with optimal usability, ensuring every interaction delights and converts.',
-      benefits: [
-        'User Research & Testing',
-        'Wireframing & Prototyping',
-        'Interactive Design Systems',
-        'Accessibility Optimization',
-        'Cross-Platform Consistency',
-        'Conversion-Focused Design'
-      ],
-      connections: ['ai-innovation', 'mobile-development', 'web-development'],
-    },
-    {
-      id: 'growth-strategy',
-      title: 'Growth Strategy',
-      icon: '📈',
-      oneLiner: 'Data-driven strategies for exponential growth',
-      description: 'Develop comprehensive growth strategies backed by data analytics, market research, and proven methodologies to scale your business effectively.',
-      benefits: [
-        'Market Analysis & Research',
-        'Performance Optimization',
-        'Conversion Rate Optimization',
-        'Digital Marketing Strategy',
-        'Analytics & Insights',
-        'Scalability Planning'
-      ],
-      connections: ['ai-innovation', 'web-development'],
-    },
-    {
-      id: 'mobile-development',
-      title: 'Mobile Development',
-      icon: '📱',
-      oneLiner: 'Cross-platform mobile apps that perform',
-      description: 'Build powerful, native-quality mobile applications using cutting-edge cross-platform technologies for iOS and Android deployment.',
-      benefits: [
-        'React Native Development',
-        'Native iOS & Android',
-        'Cross-Platform Solutions',
-        'App Store Optimization',
-        'Mobile Performance Tuning',
-        'Offline-First Architecture'
-      ],
-      connections: ['ui-ux', 'web-development', 'cloud-infrastructure'],
-    },
-    {
-      id: 'web-development',
-      title: 'Web Development',
-      icon: '🌐',
-      oneLiner: 'Modern web applications built for scale',
-      description: 'Develop high-performance, scalable web applications using modern frameworks and best practices for optimal user experience and business results.',
-      benefits: [
-        'React & Next.js Development',
-        'Full-Stack Solutions',
-        'Progressive Web Apps',
-        'Performance Optimization',
-        'SEO & Accessibility',
-        'Modern Architecture'
-      ],
-      connections: ['ai-innovation', 'ui-ux', 'mobile-development', 'cloud-infrastructure'],
+      id: 'security-modules',
+      title: 'Enterprise Security Modules',
+      description: 'Deploy bulletproof security frameworks with advanced threat detection, encryption, and compliance monitoring.',
+      benefits: ['99.9% threat prevention', 'Compliance ready', 'Zero-trust architecture'],
+      accentColor: '#FF6B9D',
     },
     {
       id: 'cloud-infrastructure',
-      title: 'Cloud Infrastructure',
-      icon: '☁️',
-      oneLiner: 'Scalable, secure cloud solutions',
-      description: 'Design and implement robust cloud infrastructure that scales with your business, ensuring security, reliability, and optimal performance.',
-      benefits: [
-        'AWS & Azure Solutions',
-        'Microservices Architecture',
-        'DevOps & CI/CD',
-        'Security & Compliance',
-        'Auto-Scaling Systems',
-        'Cost Optimization'
-      ],
-      connections: ['web-development', 'mobile-development'],
+      title: 'Scalable Cloud Infrastructure',
+      description: 'Build resilient, auto-scaling cloud architectures that grow with your business and optimize costs.',
+      benefits: ['Auto-scaling', '99.99% uptime', '60% cost reduction'],
+      accentColor: '#4ECDC4',
     },
   ];
 
-  const projectStars = [
-    {
-      id: 'ecommerce-platform',
-      title: 'E-commerce Platform',
-      client: 'RetailCorp',
-      industry: 'E-commerce',
-      services: ['Web Development', 'UI/UX Design', 'Cloud Infrastructure'],
-      impactMetric: {
-        label: 'Conversion Increase',
-        value: '+150%',
-        icon: '💰'
-      },
-      description: 'A comprehensive e-commerce solution that revolutionized online retail with modern design, seamless checkout, and intelligent product recommendations powered by AI.',
-      challenges: [
-        'Legacy system integration',
-        'High traffic scalability',
-        'Complex payment workflows',
-        'Mobile optimization'
-      ],
-      solutions: [
-        'Microservices architecture',
-        'Auto-scaling infrastructure',
-        'Streamlined checkout process',
-        'Progressive web app implementation'
-      ],
-      outcomes: [
-        '150% increase in conversion rate',
-        '95% performance score',
-        '10K+ monthly active users',
-        '40% reduction in cart abandonment'
-      ],
-      testimonial: {
-        quote: 'The new platform exceeded our expectations. Sales increased dramatically and customer satisfaction is at an all-time high.',
-        author: 'Sarah Johnson',
-        role: 'CEO, RetailCorp'
-      },
-      technologies: ['React', 'Node.js', 'MongoDB', 'Stripe', 'AWS', 'Redis', 'Docker'],
-      connections: ['ai-recommendation', 'healthcare-system'],
+  const heroStyles = StyleSheet.create({
+    container: {
+      backgroundColor: colors.light.primaryBackground,
+      paddingVertical: spacing[12],
     },
-    {
-      id: 'healthcare-system',
-      title: 'Healthcare Management System',
-      client: 'MedTech Solutions',
-      industry: 'Healthcare',
-      services: ['Mobile Development', 'AI & Innovation', 'Cloud Infrastructure'],
-      impactMetric: {
-        label: 'Admin Time Reduction',
-        value: '-40%',
-        icon: '⏱️'
-      },
-      description: 'A secure, HIPAA-compliant patient management system with real-time notifications, AI-powered diagnostics, and comprehensive analytics dashboard.',
-      challenges: [
-        'HIPAA compliance requirements',
-        'Real-time data synchronization',
-        'Integration with legacy systems',
-        'Mobile accessibility for staff'
-      ],
-      solutions: [
-        'End-to-end encryption',
-        'Real-time Firebase integration',
-        'Custom API bridges',
-        'Cross-platform mobile app'
-      ],
-      outcomes: [
-        '40% reduction in administrative time',
-        '99.9% system uptime',
-        '5K+ patients managed',
-        '100% HIPAA compliance'
-      ],
-      testimonial: {
-        quote: 'This system transformed our workflow. Doctors can now focus on patients instead of paperwork.',
-        author: 'Dr. Michael Chen',
-        role: 'Chief Medical Officer'
-      },
-      technologies: ['React Native', 'Firebase', 'Node.js', 'PostgreSQL', 'HIPAA', 'ML Kit'],
-      connections: ['ecommerce-platform', 'fintech-dashboard'],
+    heroContent: {
+      paddingHorizontal: spacing[6],
+      alignItems: 'center',
+      marginBottom: spacing[8],
     },
-    {
-      id: 'fintech-dashboard',
-      title: 'Financial Analytics Dashboard',
-      client: 'FinanceFlow',
-      industry: 'FinTech',
-      services: ['Web Development', 'AI & Innovation', 'Growth Strategy'],
-      impactMetric: {
-        label: 'Decision Speed',
-        value: '+60%',
-        icon: '🚀'
-      },
-      description: 'An interactive financial analytics platform with real-time data visualization, predictive modeling, and automated reporting for investment decisions.',
-      challenges: [
-        'Complex data visualization',
-        'Real-time market data',
-        'Regulatory compliance',
-        'High-frequency trading integration'
-      ],
-      solutions: [
-        'Custom D3.js visualizations',
-        'WebSocket streaming',
-        'Compliance-first architecture',
-        'Low-latency APIs'
-      ],
-      outcomes: [
-        '60% faster decision making',
-        '99.8% data accuracy',
-        '1M+ data points processed',
-        '24/7 real-time monitoring'
-      ],
-      testimonial: {
-        quote: 'The insights we get from this dashboard have transformed our investment strategy.',
-        author: 'Robert Kim',
-        role: 'Portfolio Manager'
-      },
-      technologies: ['D3.js', 'Python', 'PostgreSQL', 'Docker', 'Kubernetes', 'TensorFlow'],
-      connections: ['healthcare-system', 'ai-recommendation'],
+    heroTitle: {
+      fontSize: 36,
+      fontWeight: 'bold',
+      color: colors.light.textPrimary,
+      textAlign: 'center',
+      marginBottom: spacing[4],
+      lineHeight: 42,
     },
-    {
-      id: 'ai-recommendation',
-      title: 'AI Recommendation Engine',
-      client: 'StreamTech',
-      industry: 'Entertainment',
-      services: ['AI & Innovation', 'Web Development', 'Growth Strategy'],
-      impactMetric: {
-        label: 'Engagement Boost',
-        value: '+85%',
-        icon: '🎯'
-      },
-      description: 'A sophisticated AI-powered recommendation system that analyzes user behavior, preferences, and content metadata to deliver personalized experiences.',
-      challenges: [
-        'Cold start problem',
-        'Real-time personalization',
-        'Scalable ML infrastructure',
-        'Content diversity balance'
-      ],
-      solutions: [
-        'Hybrid recommendation algorithms',
-        'Edge computing deployment',
-        'Auto-scaling ML pipelines',
-        'Exploration-exploitation optimization'
-      ],
-      outcomes: [
-        '85% increase in user engagement',
-        '3x longer session duration',
-        '50M+ recommendations served',
-        '92% recommendation accuracy'
-      ],
-      testimonial: {
-        quote: 'User engagement skyrocketed after implementing this recommendation system.',
-        author: 'Lisa Park',
-        role: 'Head of Product'
-      },
-      technologies: ['TensorFlow', 'Python', 'Apache Kafka', 'Redis', 'Kubernetes', 'GraphQL'],
-      connections: ['ecommerce-platform', 'fintech-dashboard'],
+    heroSubtitle: {
+      fontSize: 18,
+      color: colors.light.textSecondary,
+      textAlign: 'center',
+      marginBottom: spacing[8],
+      lineHeight: 26,
+      maxWidth: width * 0.9,
     },
-  ];
+    ctaContainer: {
+      flexDirection: 'row',
+      gap: spacing[4],
+      marginBottom: spacing[10],
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+    },
+    ctaButton: {
+      backgroundColor: colors.light.primaryAccent,
+      paddingHorizontal: spacing[8],
+      paddingVertical: spacing[4],
+      borderRadius: 12,
+      shadowColor: colors.light.shadowColor,
+      shadowOffset: { width: 0, height: 4 },
+      shadowOpacity: 0.3,
+      shadowRadius: 12,
+      elevation: 8,
+    },
+    ctaButtonSecondary: {
+      backgroundColor: 'transparent',
+      borderWidth: 2,
+      borderColor: colors.light.primaryAccent,
+    },
+    ctaButtonText: {
+      color: '#FFFFFF',
+      fontSize: 16,
+      fontWeight: '600',
+      textAlign: 'center',
+    },
+    ctaButtonTextSecondary: {
+      color: colors.light.primaryAccent,
+    },
+    carouselContainer: {
+      paddingLeft: spacing[4],
+    },
+    useCaseCard: {
+      backgroundColor: colors.light.surfaceBackground,
+      marginHorizontal: spacing[2],
+      padding: spacing[6],
+      borderRadius: 20,
+      width: width * 0.8,
+      shadowColor: colors.light.shadowColor,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.15,
+      shadowRadius: 24,
+      elevation: 8,
+      borderWidth: 1,
+      borderColor: colors.light.glassBorder,
+    },
+    useCaseTitle: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: colors.light.textPrimary,
+      marginBottom: spacing[3],
+    },
+    useCaseDescription: {
+      fontSize: 16,
+      color: colors.light.textSecondary,
+      lineHeight: 24,
+      marginBottom: spacing[4],
+    },
+    benefitsList: {
+      marginTop: spacing[2],
+    },
+    benefitItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: spacing[3],
+    },
+    benefitDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      marginRight: spacing[3],
+    },
+    benefitText: {
+      fontSize: 14,
+      color: colors.light.textSecondary,
+      fontWeight: '500',
+      flex: 1,
+    },
+    pagination: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: spacing[6],
+      paddingHorizontal: spacing[4],
+    },
+    paginationDot: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      marginHorizontal: spacing[1],
+      backgroundColor: colors.light.textSubtle,
+    },
+    paginationDotActive: {
+      backgroundColor: colors.light.primaryAccent,
+      width: 24,
+    },
+  });
 
-  const portfolioItems = [
+  const renderUseCase = ({ item }: { item: any }) => (
+    <View style={heroStyles.useCaseCard}>
+      <Text style={heroStyles.useCaseTitle}>{item.title}</Text>
+      <Text style={heroStyles.useCaseDescription}>{item.description}</Text>
+
+      <View style={heroStyles.benefitsList}>
+        {item.benefits.map((benefit: string, benefitIndex: number) => (
+          <View key={benefitIndex} style={heroStyles.benefitItem}>
+            <View
+              style={[
+                heroStyles.benefitDot,
+                { backgroundColor: item.accentColor }
+              ]}
+            />
+            <Text style={heroStyles.benefitText}>{benefit}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+
+  return (
+    <View style={heroStyles.container}>
+      {/* Hero Content */}
+      <View style={heroStyles.heroContent}>
+        <Text style={heroStyles.heroTitle}>
+          Transform Your Business with{' '}
+          <Text style={{ color: colors.light.primaryAccent }}>AI Intelligence</Text>
+        </Text>
+
+        <Text style={heroStyles.heroSubtitle}>
+          Unlock the power of artificial intelligence to automate workflows, gain predictive insights, and accelerate your digital transformation.
+        </Text>
+
+        {/* CTA Buttons */}
+        <View style={heroStyles.ctaContainer}>
+          <TouchableOpacity style={heroStyles.ctaButton}>
+            <Text style={heroStyles.ctaButtonText}>Start Your Project</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[heroStyles.ctaButton, heroStyles.ctaButtonSecondary]}>
+            <Text style={[heroStyles.ctaButtonText, heroStyles.ctaButtonTextSecondary]}>View Portfolio</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Use Case Carousel */}
+      <FlatList
+        data={useCases}
+        renderItem={renderUseCase}
+        keyExtractor={(item) => item.id}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={(event) => {
+          const newIndex = Math.round(event.nativeEvent.contentOffset.x / (width * 0.8 + spacing[4]));
+          setCurrentIndex(newIndex);
+        }}
+        contentContainerStyle={heroStyles.carouselContainer}
+        snapToInterval={width * 0.8 + spacing[4]}
+        decelerationRate="fast"
+      />
+
+      {/* Pagination Dots */}
+      <View style={heroStyles.pagination}>
+        {useCases.map((_, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[
+              heroStyles.paginationDot,
+              index === currentIndex && heroStyles.paginationDotActive,
+            ]}
+            onPress={() => setCurrentIndex(index)}
+          />
+        ))}
+      </View>
+    </View>
+  );
+};
+
+// Mobile-specific components we'll keep for now (temporarily commented out to debug)
+// import { MobileProjectsSection } from './components/MobileProjectsSection';
+// import { MobileAboutSection } from './components/MobileAboutSection';
+// import { MobileContactSection } from './components/MobileContactSection';
+
+export default function App() {
+  const [activeSection, setActiveSection] = useState('home');
+
+  const handleNavigation = (sectionId: string) => {
+    setActiveSection(sectionId);
+    console.log(`Navigating to: ${sectionId}`);
+  };
+
+  // Navigation items matching web app structure
+  const navItems = [
     {
-      title: 'E-commerce Platform',
-      description: 'Full-stack e-commerce solution with modern design and seamless checkout.',
+      id: "home",
+      label: "Home",
+      onPress: () => handleNavigation('home'),
+      active: activeSection === 'home',
+      icon: "🏠"
     },
     {
-      title: 'Healthcare App',
-      description: 'Patient management system with real-time notifications and analytics.',
+      id: "projects",
+      label: "Solutions",
+      onPress: () => handleNavigation('projects'),
+      active: activeSection === 'projects',
+      icon: "🚀"
     },
     {
-      title: 'Financial Dashboard',
-      description: 'Interactive dashboard for financial data visualization and reporting.',
+      id: "clients",
+      label: "Partners",
+      onPress: () => handleNavigation('clients'),
+      active: activeSection === 'clients',
+      icon: "🤝"
+    },
+    {
+      id: "about",
+      label: "About",
+      onPress: () => handleNavigation('about'),
+      active: activeSection === 'about',
+      icon: "👥"
+    },
+    {
+      id: "contact",
+      label: "Connect",
+      onPress: () => handleNavigation('contact'),
+      active: activeSection === 'contact',
+      icon: "📧"
+    },
+    {
+      id: "resume",
+      label: "Resume",
+      onPress: () => handleNavigation('resume'),
+      active: activeSection === 'resume',
+      icon: "📄"
     },
   ];
 
   return (
     <View style={styles.container}>
-      <StatusBar style="dark" />
+      <StatusBar style="light" backgroundColor={colors.legacy.textDark} />
 
-      <Navigation
-        items={navigationItems}
-        ctaButton={{
-          title: 'Get Started',
-          onPress: () => console.log('Get Started clicked'),
-        }}
-      />
+      {/* Liquid Glass Header */}
+      <LiquidGlassHeader items={navItems} activeSection={activeSection} />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        <ProjectPortalQuest
-          title="Crafting Digital Futures"
-          subtitle="Tap to begin your quest through our expertise"
-          dataNodes={dataShards}
-          onBeginQuest={() => console.log('Quest began!')}
-          style={styles.portalQuest}
-        />
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Hero Section - Full sophisticated UI matching web app */}
+        <SophisticatedHeroSection />
 
-        {/* Solution Flow Section */}
-        <SolutionFlow
-          services={serviceOrbs}
-          onServiceClick={(service) => {
-            console.log(`${service.title} clicked for deep dive`);
-          }}
-          onSolutionBuilt={(selectedServices) => {
-            console.log('Solution built with services:', selectedServices.map(s => s.title));
-          }}
-          style={styles.solutionFlow}
-        />
+        {/* Projects Section - Now using shared cross-platform component */}
+        <ProjectsSection theme="light" />
 
-        {/* Project Constellation Section */}
-        <ProjectConstellation
-          projects={projectStars}
-          onProjectClick={(project) => {
-            console.log(`Project star clicked: ${project.title}`);
-          }}
-          onFilterChange={(filters) => {
-            console.log('Galaxy filters changed:', filters);
-          }}
-          style={styles.projectConstellation}
-        />
+        {/* About Section - Temporarily commented out */}
+        {/* <MobileAboutSection /> */}
 
-        {/* Contact CTA Section */}
-        <View style={styles.ctaSection}>
-          <Button
-            title="Contact Us Today"
-            onPress={() => setActiveNavItem('contact')}
-            variant="secondary"
-            size="lg"
-            style={styles.ctaButton}
-            textStyle={styles.ctaButtonText}
-          />
-        </View>
+        {/* Contact Section - Temporarily commented out */}
+        {/* <MobileContactSection /> */}
       </ScrollView>
     </View>
   );
@@ -405,56 +340,12 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: colors.legacy.textDark,
   },
-
-  scrollView: {
+  scrollContainer: {
     flex: 1,
   },
-
-  section: {
-    paddingVertical: 40,
-    paddingHorizontal: 20,
-  },
-
-  portfolioSection: {
-    backgroundColor: colors.lightGray + '20', // 20% opacity
-  },
-
-  sectionContent: {
-    maxWidth: 800,
-    alignSelf: 'center',
-    width: '100%',
-  },
-
-  ctaSection: {
-    backgroundColor: colors.accentPop,
-    paddingVertical: 60,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-
-  ctaButton: {
-    backgroundColor: colors.white,
-    borderColor: colors.white,
-    minWidth: 200,
-  },
-
-  ctaButtonText: {
-    color: colors.accentPop,
-  },
-
-  portalQuest: {
-    minHeight: 600,
-  },
-
-  solutionFlow: {
-    minHeight: 500,
-    marginVertical: spacing[4],
-  },
-
-  projectConstellation: {
-    minHeight: 600,
-    marginVertical: spacing[4],
+  scrollContent: {
+    flexGrow: 1,
   },
 });

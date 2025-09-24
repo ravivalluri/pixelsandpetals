@@ -3,20 +3,25 @@
     "version": "1.0.0",
     "description": "Official Website for Pixels & Petals Organization",
     "main": "index.js",
+    "type": "module",
     "scripts": {
         "dev": "cd apps/web && next dev --turbopack",
+        "dev:mobile": "cd apps/mobile && expo start",
         "build": "cd apps/web && next build --turbopack",
         "start": "cd apps/web && next start",
-        "lint": "cd apps/web && eslint"
+        "lint": "cd apps/web && eslint",
+        "mobile:ios": "cd apps/mobile && expo run:ios",
+        "mobile:android": "cd apps/mobile && expo run:android",
+        "type-check": "tsc --noEmit",
+        "type-check:mobile": "cd apps/mobile && tsc --noEmit"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/ravivalluri/pixelsandpetals.git"
     },
-    "keywords": [],
-    "author": "",
+    "keywords": ["react", "react-native", "next.js", "expo", "monorepo"],
+    "author": "Ravi Valluri",
     "license": "ISC",
-    "type": "module",
     "bugs": {
         "url": "https://github.com/ravivalluri/pixelsandpetals/issues"
     },
@@ -24,21 +29,28 @@
     "dependencies": {
         "react": "19.1.0",
         "react-dom": "19.1.0",
+        "react-native": "0.81.4",
         "next": "15.5.3",
+        "expo": "~54.0.7",
+        "expo-status-bar": "~3.0.8",
         "framer-motion": "^12.23.12",
-        "qrcode.react": "^4.2.0"
+        "qrcode.react": "^4.2.0",
+        "@emailjs/browser": "^4.4.1",
+        "react-icons": "^5.5.0"
     },
     "devDependencies": {
         "turbo": "^2.5.6",
-        "typescript": "^5",
+        "typescript": "~5.9.2",
         "@types/node": "^20",
-        "@types/react": "^19",
+        "@types/react": "~19.1.0",
         "@types/react-dom": "^19",
         "@tailwindcss/postcss": "^4",
         "tailwindcss": "^4",
         "eslint": "^9",
         "eslint-config-next": "15.5.3",
-        "@eslint/eslintrc": "^3"
+        "@eslint/eslintrc": "^3",
+        "@react-native/metro-config": "^0.81.1",
+        "metro-react-native-babel-transformer": "^0.77.0"
     },
     "workspaces": [
         "apps/*",

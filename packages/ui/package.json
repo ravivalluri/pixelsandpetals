@@ -6,8 +6,8 @@
   "types": "index.d.ts",
   "exports": {
     ".": {
-      "react-native": "./index.native.js",
-      "default": "./index.web.js"
+      "react-native": "./index.native.ts",
+      "default": "./index.web.ts"
     }
   },
   "scripts": {

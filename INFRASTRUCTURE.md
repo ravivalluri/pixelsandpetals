@@ -82,6 +82,7 @@ Run the setup script to deploy everything automatically:
 ### Manual Setup
 
 1. **Configure AWS Backend**:
+
    ```bash
    # Create S3 bucket for Terraform state
    aws s3 mb s3://pixelsandpetals-terraform-state
@@ -95,6 +96,7 @@ Run the setup script to deploy everything automatically:
    ```
 
 2. **Deploy Infrastructure**:
+
    ```bash
    cd infrastructure/terraform
    terraform init
@@ -103,6 +105,7 @@ Run the setup script to deploy everything automatically:
    ```
 
 3. **Build and Deploy Application**:
+
    ```bash
    # The CI/CD pipeline will handle this automatically
    # Or manually:
@@ -185,6 +188,7 @@ SLACK_WEBHOOK_URL             # (Optional) Slack notifications
 ### CloudWatch Dashboards
 
 Automatically created dashboards for:
+
 - Application performance metrics
 - Infrastructure health
 - Security monitoring
@@ -207,18 +211,21 @@ Automatically created dashboards for:
 ## 🔒 Security Features
 
 ### Network Security
+
 - **VPC**: Isolated network environment
 - **Private Subnets**: Application runs in private subnets
 - **Security Groups**: Least-privilege access control
 - **NACLs**: Additional network-level security
 
 ### Application Security
+
 - **WAF**: Web Application Firewall with OWASP rules
 - **SSL/TLS**: End-to-end encryption
 - **IAM Roles**: Least-privilege service access
 - **Secrets Manager**: Secure credential storage
 
 ### Data Security
+
 - **S3 Encryption**: Server-side encryption at rest
 - **ECS Encryption**: Container data encryption
 - **RDS Encryption**: Database encryption (if enabled)
@@ -227,6 +234,7 @@ Automatically created dashboards for:
 ## 💰 Cost Optimization
 
 ### Implemented Optimizations
+
 - **VPC Endpoints**: Reduce NAT Gateway costs
 - **S3 Lifecycle Policies**: Automatic storage class transitions
 - **ECS Fargate**: Pay-per-use containers
@@ -234,6 +242,7 @@ Automatically created dashboards for:
 - **Auto Scaling**: Scale resources based on demand
 
 ### Cost Monitoring
+
 - **AWS Cost Explorer**: Track spending
 - **Budget Alerts**: Spending notifications
 - **Resource Tagging**: Cost allocation tracking
@@ -241,12 +250,14 @@ Automatically created dashboards for:
 ## 🚀 Scaling Features
 
 ### Automatic Scaling
+
 - **ECS Auto Scaling**: CPU/Memory based scaling
 - **ALB**: Automatic load distribution
 - **CloudFront**: Global edge caching
 - **S3**: Unlimited storage scaling
 
 ### Performance Optimization
+
 - **Multi-AZ Deployment**: High availability
 - **CDN**: Global content delivery
 - **Load Balancing**: Traffic distribution
@@ -255,12 +266,14 @@ Automatically created dashboards for:
 ## 🛠️ Maintenance
 
 ### Regular Tasks
+
 - **Security Updates**: Container image updates
 - **Certificate Renewal**: Automatic via ACM
 - **Backup Monitoring**: S3 lifecycle management
 - **Performance Review**: CloudWatch metrics analysis
 
 ### Disaster Recovery
+
 - **Multi-AZ Setup**: Automatic failover
 - **S3 Cross-Region Replication**: Data backup
 - **Infrastructure as Code**: Quick recovery
@@ -269,19 +282,22 @@ Automatically created dashboards for:
 ## 📚 Additional Resources
 
 ### Documentation
+
 - [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
 - [ECS Best Practices](https://docs.aws.amazon.com/AmazonECS/latest/bestpracticesguide/)
 - [CloudFront Developer Guide](https://docs.aws.amazon.com/cloudfront/)
 
 ### Monitoring Dashboards
+
 - CloudWatch: Infrastructure metrics
 - Application: Performance monitoring
 - Security: AWS Security Hub
 - Cost: AWS Cost Explorer
 
 ### Support Contacts
-- **Infrastructure Issues**: engineering@pixelsandpetals.com
-- **Security Incidents**: security@pixelsandpetals.com
+
+- **Infrastructure Issues**: <engineering@pixelsandpetals.com>
+- **Security Incidents**: <security@pixelsandpetals.com>
 - **Emergency**: Follow incident response procedures
 
 ## 🔄 Deployment Workflow
@@ -311,6 +327,7 @@ Automatically created dashboards for:
 ## 📞 Support
 
 For infrastructure support and questions:
-- **Email**: engineering@pixelsandpetals.com
+
+- **Email**: <engineering@pixelsandpetals.com>
 - **Documentation**: This README and inline code comments
 - **Emergency**: Follow incident response procedures in security runbook

@@ -1,4 +1,4 @@
-# Variables for Pixels & Petals Infrastructure
+\# Variables for Pixels & Petals Infrastructure
 
 variable "aws_region" {
   description = "AWS region for resources"
