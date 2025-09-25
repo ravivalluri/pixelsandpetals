@@ -80,8 +80,10 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
         duration: 200,
         useNativeDriver: true,
       }),
-    ]);
-    };
+    ]).start(() => {
+      setMenuVisible(false);
+    });
+  };
 
   const triggerLogoGlow = () => {
     Animated.sequence([
@@ -233,7 +235,7 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
                   {
                     backgroundColor: colors.glassBackground,
                     borderColor: colors.glassBorder,
-                  }
+                  },
                 ]}
               >
                 <Text style={[styles.closeButtonText, { color: colors.textSecondary }]}>✕</Text>
@@ -343,7 +345,7 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
                 {
                   backgroundColor: colors.glassBackground,
                   borderColor: colors.glassBorder,
-                }
+                },
               ]}
               activeOpacity={0.8}
             >

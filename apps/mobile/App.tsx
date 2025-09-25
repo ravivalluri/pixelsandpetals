@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity, Dimensions, FlatList, Platform } from 'react-native';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { spacing } from '@pixelsandpetals/ui';
 import { LiquidGlassHeader } from './components/LiquidGlassHeader';
 import SolutionsSection from './components/SolutionsSection';
@@ -265,10 +265,40 @@ const SophisticatedHeroSection = () => {
 const AppContent = () => {
   const { colors } = useTheme();
   const [activeSection, setActiveSection] = useState('home');
+  const scrollViewRef = useRef<ScrollView>(null);
+
+  // Refs for each section
+  const sectionRefs = {
+    home: useRef<View>(null),
+    projects: useRef<View>(null),
+    calculator: useRef<View>(null),
+    clients: useRef<View>(null),
+    about: useRef<View>(null),
+    contact: useRef<View>(null),
+  };
 
   const handleNavigation = (sectionId: string) => {
     setActiveSection(sectionId);
-    console.log(`Navigating to: ${sectionId}`);
+
+    if (sectionId === 'home') {
+      // Scroll to top for home
+      scrollViewRef.current?.scrollTo({
+        y: 0,
+        animated: true,
+      });
+      return;
+    }
+
+    // Scroll to the appropriate section
+    const sectionRef = sectionRefs[sectionId as keyof typeof sectionRefs];
+    if (sectionRef?.current && scrollViewRef.current) {
+      sectionRef.current.measure((_, __, ___, ____, _____, pageY) => {
+        scrollViewRef.current?.scrollTo({
+          y: pageY - 120, // Offset for header
+          animated: true,
+        });
+      });
+    }
   };
 
   // Navigation items matching web app structure
@@ -288,8 +318,15 @@ const AppContent = () => {
       icon: '🚀',
     },
     {
+      id: 'calculator',
+      label: 'ROI Calculator',
+      onPress: () => handleNavigation('calculator'),
+      active: activeSection === 'calculator',
+      icon: '📊',
+    },
+    {
       id: 'clients',
-      label: 'Partners',
+      label: 'Clients',
       onPress: () => handleNavigation('clients'),
       active: activeSection === 'clients',
       icon: '🤝',
@@ -303,17 +340,10 @@ const AppContent = () => {
     },
     {
       id: 'contact',
-      label: 'Connect',
+      label: 'Contact',
       onPress: () => handleNavigation('contact'),
       active: activeSection === 'contact',
       icon: '📧',
-    },
-    {
-      id: 'resume',
-      label: 'Resume',
-      onPress: () => handleNavigation('resume'),
-      active: activeSection === 'resume',
-      icon: '📄',
     },
   ];
 
@@ -338,27 +368,40 @@ const AppContent = () => {
       <LiquidGlassHeader items={navItems} activeSection={activeSection} />
 
       <ScrollView
+        ref={scrollViewRef}
         style={styles.scrollContainer}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {/* Hero Section - Full sophisticated UI matching web app */}
-        <SophisticatedHeroSection />
+        <View ref={sectionRefs.home}>
+          <SophisticatedHeroSection />
+        </View>
 
         {/* Solutions Section - Mobile-optimized version from web app */}
-        <SolutionsSection />
+        <View ref={sectionRefs.projects}>
+          <SolutionsSection />
+        </View>
 
         {/* Quick ROI Calculator */}
-        <QuickROICalculator />
+        <View ref={sectionRefs.calculator}>
+          <QuickROICalculator />
+        </View>
 
         {/* Our Clients Section */}
-        <ClientsSection />
+        <View ref={sectionRefs.clients}>
+          <ClientsSection />
+        </View>
 
         {/* About Section */}
-        <AboutSection />
+        <View ref={sectionRefs.about}>
+          <AboutSection />
+        </View>
 
         {/* Connection Nexus */}
-        <ConnectionNexus />
+        <View ref={sectionRefs.contact}>
+          <ConnectionNexus />
+        </View>
       </ScrollView>
     </View>
   );
