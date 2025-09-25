@@ -1,46 +1,61 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, spacing } from '@pixelsandpetals/ui';
+import { spacing } from '@pixelsandpetals/ui';
+import { useTheme } from '../contexts/ThemeContext';
 
 const skills = [
-  { name: 'React Native', level: 95, color: colors.accentPop },
-  { name: 'Next.js', level: 90, color: '#61DAFB' },
-  { name: 'TypeScript', level: 88, color: '#3178C6' },
-  { name: 'UI/UX Design', level: 85, color: '#FF6B6B' },
-  { name: 'AI Integration', level: 80, color: '#4ECDC4' },
+  { name: 'React Native', level: 95 },
+  { name: 'Next.js', level: 90 },
+  { name: 'TypeScript', level: 88 },
+  { name: 'UI/UX Design', level: 85 },
+  { name: 'AI Integration', level: 80 },
 ];
 
-const SkillBar: React.FC<{ skill: typeof skills[0] }> = ({ skill }) => (
-  <View style={styles.skillContainer}>
-    <View style={styles.skillHeader}>
-      <Text style={styles.skillName}>{skill.name}</Text>
-      <Text style={styles.skillLevel}>{skill.level}%</Text>
+const skillColors = [
+  '#6699FF',  // React Native - primary accent
+  '#61DAFB',  // Next.js
+  '#3178C6',  // TypeScript
+  '#FF6B6B',  // UI/UX Design
+  '#4ECDC4',  // AI Integration
+];
+
+const SkillBar: React.FC<{ skill: typeof skills[0], color: string }> = ({ skill, color }) => {
+  const { colors } = useTheme();
+  
+  return (
+    <View style={styles.skillContainer}>
+      <View style={styles.skillHeader}>
+        <Text style={[styles.skillName, { color: colors.textSecondary }]}>{skill.name}</Text>
+        <Text style={[styles.skillLevel, { color: colors.textSubtle }]}>{skill.level}%</Text>
+      </View>
+      <View style={styles.skillBarContainer}>
+        <View style={[styles.skillBarBackground, { backgroundColor: `${colors.textSubtle}30` }]} />
+        <View
+          style={[
+            styles.skillBarFill,
+            { width: `${skill.level}%`, backgroundColor: color }
+          ]}
+        />
+      </View>
     </View>
-    <View style={styles.skillBarContainer}>
-      <View style={styles.skillBarBackground} />
-      <View
-        style={[
-          styles.skillBarFill,
-          { width: `${skill.level}%`, backgroundColor: skill.color }
-        ]}
-      />
-    </View>
-  </View>
-);
+  );
+};
 
 export const MobileAboutSection: React.FC = () => {
+  const { colors } = useTheme();
+  
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: `${colors.surfaceBackground}10` }]}>
       <View style={styles.header}>
-        <Text style={styles.sectionTitle}>About Us</Text>
-        <Text style={styles.sectionSubtitle}>
+        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>About Us</Text>
+        <Text style={[styles.sectionSubtitle, { color: colors.textSubtle }]}>
           Passionate about creating digital experiences that make a difference
         </Text>
       </View>
 
       <View style={styles.content}>
         <View style={styles.descriptionContainer}>
-          <Text style={styles.description}>
+          <Text style={[styles.description, { color: colors.textSecondary }]}>
             We are a team of dedicated professionals who believe in the power of
             technology to transform businesses and lives. Our approach combines
             cutting-edge technical expertise with thoughtful design to deliver
@@ -49,24 +64,24 @@ export const MobileAboutSection: React.FC = () => {
         </View>
 
         <View style={styles.skillsContainer}>
-          <Text style={styles.skillsTitle}>Core Expertise</Text>
+          <Text style={[styles.skillsTitle, { color: colors.textPrimary }]}>Core Expertise</Text>
           {skills.map((skill, index) => (
-            <SkillBar key={index} skill={skill} />
+            <SkillBar key={index} skill={skill} color={skillColors[index]} />
           ))}
         </View>
 
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>50+</Text>
-            <Text style={styles.statLabel}>Projects Delivered</Text>
+            <Text style={[styles.statNumber, { color: colors.primaryAccent }]}>50+</Text>
+            <Text style={[styles.statLabel, { color: colors.textSubtle }]}>Projects Delivered</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>5+</Text>
-            <Text style={styles.statLabel}>Years Experience</Text>
+            <Text style={[styles.statNumber, { color: colors.primaryAccent }]}>5+</Text>
+            <Text style={[styles.statLabel, { color: colors.textSubtle }]}>Years Experience</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>100%</Text>
-            <Text style={styles.statLabel}>Client Satisfaction</Text>
+            <Text style={[styles.statNumber, { color: colors.primaryAccent }]}>100%</Text>
+            <Text style={[styles.statLabel, { color: colors.textSubtle }]}>Client Satisfaction</Text>
           </View>
         </View>
       </View>
@@ -76,7 +91,6 @@ export const MobileAboutSection: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: `${colors.lightGray}10`,
     paddingVertical: spacing[12],
     paddingHorizontal: spacing[6],
   },
@@ -87,13 +101,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 36,
     fontWeight: '700',
-    color: colors.coreDark,
     textAlign: 'center',
     marginBottom: spacing[3],
   },
   sectionSubtitle: {
     fontSize: 16,
-    color: colors.mediumGray,
     textAlign: 'center',
     lineHeight: 24,
     maxWidth: 300,
@@ -106,7 +118,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: colors.darkGray,
     lineHeight: 26,
     textAlign: 'center',
   },
@@ -116,7 +127,6 @@ const styles = StyleSheet.create({
   skillsTitle: {
     fontSize: 24,
     fontWeight: '600',
-    color: colors.coreDark,
     textAlign: 'center',
     marginBottom: spacing[6],
   },
@@ -131,12 +141,10 @@ const styles = StyleSheet.create({
   skillName: {
     fontSize: 16,
     fontWeight: '500',
-    color: colors.darkGray,
   },
   skillLevel: {
     fontSize: 14,
     fontWeight: '600',
-    color: colors.mediumGray,
   },
   skillBarContainer: {
     position: 'relative',
@@ -150,7 +158,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: `${colors.lightGray}30`,
   },
   skillBarFill: {
     position: 'absolute',
@@ -170,12 +177,10 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 32,
     fontWeight: '800',
-    color: colors.accentPop,
     marginBottom: spacing[1],
   },
   statLabel: {
     fontSize: 12,
-    color: colors.mediumGray,
     textAlign: 'center',
     fontWeight: '500',
   },

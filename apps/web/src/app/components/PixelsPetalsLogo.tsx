@@ -13,7 +13,7 @@ export const PixelsPetalsLogo: React.FC<PixelsPetalsLogoProps> = ({
   height = 100,
   className = ""
 }) => {
-  const { theme, colors } = useTheme();
+  const { theme } = useTheme();
 
   // Define colors based on theme
   const wordmarkColor = theme === 'dark' ? '#FFFFFF' : '#1A1F24';

@@ -9,12 +9,12 @@ export const LiquidGlassCursor: React.FC = () => {
   const rafRef = useRef<number | null>(null);
 
   // Throttle mouse movement updates
-  const updateCursorPosition = () => {
+  const updateCursorPosition = React.useCallback(() => {
     if (cursorRef.current) {
       cursorRef.current.style.transform = `translate3d(${positionRef.current.x}px, ${positionRef.current.y}px, 0) translate(-50%, -50%) ${isClicking ? 'scale(0.8)' : 'scale(1)'}`;
     }
     rafRef.current = null;
-  };
+  }, [isClicking]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -75,7 +75,7 @@ export const LiquidGlassCursor: React.FC = () => {
         cancelAnimationFrame(rafRef.current);
       }
     };
-  }, [isClicking]);
+  }, [isClicking, updateCursorPosition]);
 
   return (
     <>

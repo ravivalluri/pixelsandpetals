@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { colors, spacing, Card } from '@pixelsandpetals/ui';
+import { spacing } from '@pixelsandpetals/ui';
+import { useTheme } from '../contexts/ThemeContext';
 
 const projects = [
   {
@@ -34,11 +35,13 @@ const projects = [
 ];
 
 export const MobileProjectsSection: React.FC = () => {
+  const { colors } = useTheme();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.primaryBackground }]}>
       <View style={styles.header}>
-        <Text style={styles.sectionTitle}>Our Solutions</Text>
-        <Text style={styles.sectionSubtitle}>
+        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Our Solutions</Text>
+        <Text style={[styles.sectionSubtitle, { color: colors.textSubtle }]}>
           Comprehensive digital services tailored to your needs
         </Text>
       </View>
@@ -50,26 +53,32 @@ export const MobileProjectsSection: React.FC = () => {
         style={styles.projectsScroll}
       >
         {projects.map((project) => (
-          <View key={project.id} style={styles.projectCard}>
+          <View key={project.id} style={[styles.projectCard, {
+            backgroundColor: colors.surfaceBackground,
+            borderColor: colors.glassBorder,
+            shadowColor: colors.shadowColor
+          }]}>
             <View style={styles.cardHeader}>
               <Text style={styles.projectIcon}>{project.icon}</Text>
-              <Text style={styles.projectTitle}>{project.title}</Text>
+              <Text style={[styles.projectTitle, { color: colors.textPrimary }]}>{project.title}</Text>
             </View>
 
-            <Text style={styles.projectDescription}>
+            <Text style={[styles.projectDescription, { color: colors.textSubtle }]}>
               {project.description}
             </Text>
 
             <View style={styles.featuresContainer}>
               {project.features.map((feature, index) => (
-                <View key={index} style={styles.featureTag}>
-                  <Text style={styles.featureText}>{feature}</Text>
+                <View key={index} style={[styles.featureTag, {
+                  backgroundColor: `${colors.primaryAccent}15`
+                }]}>
+                  <Text style={[styles.featureText, { color: colors.primaryAccent }]}>{feature}</Text>
                 </View>
               ))}
             </View>
 
             <View style={styles.cardFooter}>
-              <Text style={styles.learnMore}>Learn More →</Text>
+              <Text style={[styles.learnMore, { color: colors.primaryAccent }]}>Learn More →</Text>
             </View>
           </View>
         ))}
@@ -80,7 +89,6 @@ export const MobileProjectsSection: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
     paddingVertical: spacing[12],
     paddingHorizontal: spacing[6],
   },
@@ -91,13 +99,11 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 36,
     fontWeight: '700',
-    color: colors.coreDark,
     textAlign: 'center',
     marginBottom: spacing[3],
   },
   sectionSubtitle: {
     fontSize: 16,
-    color: colors.mediumGray,
     textAlign: 'center',
     lineHeight: 24,
     maxWidth: 300,
@@ -111,13 +117,10 @@ const styles = StyleSheet.create({
   },
   projectCard: {
     width: 280,
-    backgroundColor: colors.background,
     borderRadius: 16,
     padding: spacing[6],
     marginRight: spacing[4],
     borderWidth: 1,
-    borderColor: `${colors.lightGray}40`,
-    shadowColor: colors.coreDark,
     shadowOffset: {
       width: 0,
       height: 4,
@@ -137,12 +140,10 @@ const styles = StyleSheet.create({
   projectTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: colors.coreDark,
     textAlign: 'center',
   },
   projectDescription: {
     fontSize: 14,
-    color: colors.mediumGray,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: spacing[6],
@@ -154,7 +155,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing[6],
   },
   featureTag: {
-    backgroundColor: `${colors.accentPop}15`,
     borderRadius: 12,
     paddingHorizontal: spacing[3],
     paddingVertical: spacing[1],
@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 12,
-    color: colors.accentPop,
     fontWeight: '500',
   },
   cardFooter: {
@@ -170,7 +169,6 @@ const styles = StyleSheet.create({
   },
   learnMore: {
     fontSize: 14,
-    color: colors.accentPop,
     fontWeight: '600',
   },
 });

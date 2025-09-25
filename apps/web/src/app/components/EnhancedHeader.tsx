@@ -25,8 +25,8 @@ const contextualSuggestions = [
     action: () => {
       document.getElementById("contact-section")?.scrollIntoView({ behavior: 'smooth' });
     },
-    condition: (scrollPosition: number, timeOnPage: number, currentPage: string) => {
-      return timeOnPage > 30 || scrollPosition > 1500;
+    condition: (scrollPosition: number, _timeOnPage: number, _currentPage: string) => {
+      return _timeOnPage > 30 || scrollPosition > 1500;
     }
   },
   {
@@ -36,7 +36,7 @@ const contextualSuggestions = [
     action: () => {
       document.getElementById("about-section")?.scrollIntoView({ behavior: 'smooth' });
     },
-    condition: (scrollPosition: number, timeOnPage: number, currentPage: string) => {
+    condition: (scrollPosition: number, _timeOnPage: number, _currentPage: string) => {
       return scrollPosition > 2000;
     }
   },
@@ -47,7 +47,7 @@ const contextualSuggestions = [
     action: () => {
       document.getElementById("projects-section")?.scrollIntoView({ behavior: 'smooth' });
     },
-    condition: (scrollPosition: number, timeOnPage: number, currentPage: string) => {
+    condition: (scrollPosition: number, _timeOnPage: number, _currentPage: string) => {
       return scrollPosition > 2500 && scrollPosition < 3500;
     }
   }

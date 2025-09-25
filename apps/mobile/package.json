@@ -8,18 +8,28 @@
     "ios": "expo run:ios"
   },
   "dependencies": {
-    "@pixelsandpetals/ui": "*",
+    "@bottom-tabs/react-navigation": "^0.11.2",
+    "@pixelsandpetals/ui": "file:../../packages/ui",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-community/blur": "^4.4.1",
     "expo": "~54.0.10",
+    "expo-build-properties": "~1.0.9",
     "expo-status-bar": "~3.0.8",
     "react": "19.1.0",
     "react-native": "0.81.4",
     "react-native-svg": "^15.13.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.35.0",
     "@react-native/metro-config": "^0.81.1",
     "@types/react": "~19.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "metro-react-native-babel-transformer": "^0.77.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.44.1"
   },
   "private": true
 }

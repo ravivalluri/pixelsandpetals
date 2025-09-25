@@ -109,9 +109,9 @@ export const ProjectsSection: React.FC = () => {
     },
     {
       title: "Design System",
-      subtitle: "Pixels & Petals UI kit",
+      subtitle: "Pixels & Petals UI kit with React and React Native",
       icon: <DesignSystemIcon className={styles.projectIcon} />,
-      tags: ["Figma", "Storybook"],
+      tags: ["React", "Figma", "Storybook"],
       color: "#45B7D1", // Sky Blue - Design/UI
     },
     {

@@ -12,6 +12,8 @@ import {
   Platform,
 } from 'react-native';
 import { PixelsPetalsLogo } from './PixelsPetalsLogo';
+import { ThemeToggle } from './ThemeToggle';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface NavItem {
   id: string;
@@ -35,6 +37,7 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
   activeSection = 'home',
   onScroll,
 }) => {
+  const { theme, colors } = useTheme();
   const [menuVisible, setMenuVisible] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
 
@@ -77,10 +80,8 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
         duration: 200,
         useNativeDriver: true,
       }),
-    ]).start(() => {
-      setMenuVisible(false);
-    });
-  };
+    ]);
+    };
 
   const triggerLogoGlow = () => {
     Animated.sequence([
@@ -147,6 +148,7 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
           style={[
             styles.hamburgerLine,
             {
+              backgroundColor: colors.textSecondary,
               transform: [
                 { translateY: line1TranslateY },
                 { rotate: line1Rotation },
@@ -158,6 +160,7 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
           style={[
             styles.hamburgerLine,
             {
+              backgroundColor: colors.textSecondary,
               opacity: line2Opacity,
             },
           ]}
@@ -166,6 +169,7 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
           style={[
             styles.hamburgerLine,
             {
+              backgroundColor: colors.textSecondary,
               transform: [
                 { translateY: line3TranslateY },
                 { rotate: line3Rotation },
@@ -215,14 +219,24 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
             style={[
               styles.liquidGlassDrawer,
               {
+                backgroundColor: theme === 'dark' ? 'rgba(15, 20, 25, 0.95)' : 'rgba(240, 248, 255, 0.95)',
                 transform: [{ translateX: drawerTranslateX }],
               },
             ]}
           >
             <View style={styles.drawerHeader}>
-              <PixelsPetalsLogo width={120} height={30} theme="dark" />
-              <TouchableOpacity onPress={closeMenu} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>✕</Text>
+              <PixelsPetalsLogo width={220} height={55} theme={theme} />
+              <TouchableOpacity
+                onPress={closeMenu}
+                style={[
+                  styles.closeButton,
+                  {
+                    backgroundColor: colors.glassBackground,
+                    borderColor: colors.glassBorder,
+                  }
+                ]}
+              >
+                <Text style={[styles.closeButtonText, { color: colors.textSecondary }]}>✕</Text>
               </TouchableOpacity>
             </View>
 
@@ -244,6 +258,9 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
                     <Text
                       style={[
                         styles.drawerItemText,
+                        {
+                          color: item.active ? colors.primaryAccent : colors.textSecondary,
+                        },
                         item.active && styles.drawerItemTextActive,
                       ]}
                     >
@@ -271,9 +288,11 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
         style={[
           styles.container,
           {
-            backgroundColor: `rgba(15, 20, 25, ${getGlassOpacity()})`,
+            backgroundColor: theme === 'dark'
+              ? `rgba(15, 20, 25, ${getGlassOpacity()})`
+              : `rgba(240, 248, 255, ${getGlassOpacity()})`,
             borderBottomWidth: scrollPosition > 200 ? 1 : 0,
-            borderBottomColor: 'rgba(102, 153, 255, 0.2)',
+            borderBottomColor: colors.glassBorder,
           },
         ]}
       >
@@ -282,6 +301,7 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
           style={[
             styles.glassOverlay,
             {
+              backgroundColor: theme === 'dark' ? 'rgba(136, 170, 221, 0.05)' : 'rgba(102, 153, 255, 0.05)',
               opacity: getBlurIntensity(),
             },
           ]}
@@ -307,17 +327,29 @@ export const LiquidGlassHeader: React.FC<LiquidGlassHeaderProps> = ({
                 },
               ]}
             />
-            <PixelsPetalsLogo width={140} height={36} theme="dark" />
+            <PixelsPetalsLogo width={240} height={60} theme={theme} />
           </TouchableOpacity>
 
-          {/* Menu Button */}
-          <TouchableOpacity
-            onPress={menuVisible ? closeMenu : openMenu}
-            style={styles.menuButton}
-            activeOpacity={0.8}
-          >
-            {renderHamburgerIcon()}
-          </TouchableOpacity>
+          {/* Actions Container */}
+          <View style={styles.actionsContainer}>
+            {/* Theme Toggle */}
+            <ThemeToggle />
+
+            {/* Menu Button */}
+            <TouchableOpacity
+              onPress={menuVisible ? closeMenu : openMenu}
+              style={[
+                styles.menuButton,
+                {
+                  backgroundColor: colors.glassBackground,
+                  borderColor: colors.glassBorder,
+                }
+              ]}
+              activeOpacity={0.8}
+            >
+              {renderHamburgerIcon()}
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
@@ -352,7 +384,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(102, 153, 255, 0.05)',
     borderRadius: 0,
   },
 
@@ -371,11 +402,17 @@ const styles = StyleSheet.create({
 
   logoGlow: {
     position: 'absolute',
-    width: 160,
-    height: 50,
+    width: 260,
+    height: 75,
     backgroundColor: '#6699FF',
-    borderRadius: 25,
+    borderRadius: 38,
     opacity: 0,
+  },
+
+  actionsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
 
   menuButton: {
@@ -384,9 +421,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 22,
-    backgroundColor: 'rgba(102, 153, 255, 0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(102, 153, 255, 0.2)',
   },
 
   hamburgerContainer: {
@@ -398,7 +433,6 @@ const styles = StyleSheet.create({
   hamburgerLine: {
     width: 24,
     height: 2,
-    backgroundColor: '#E2E8F0',
     borderRadius: 1,
   },
 
@@ -423,7 +457,6 @@ const styles = StyleSheet.create({
   liquidGlassDrawer: {
     width: screenWidth * 0.85,
     height: screenHeight,
-    backgroundColor: 'rgba(15, 20, 25, 0.95)',
     position: 'absolute',
     right: 0,
     top: 0,
@@ -457,14 +490,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 18,
-    backgroundColor: 'rgba(102, 153, 255, 0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(102, 153, 255, 0.2)',
   },
 
   closeButtonText: {
     fontSize: 16,
-    color: '#E2E8F0',
     fontWeight: '600',
   },
 

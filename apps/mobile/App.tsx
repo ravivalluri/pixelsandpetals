@@ -1,52 +1,75 @@
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, Dimensions, FlatList, Platform } from 'react-native';
 import { useState } from 'react';
-import { colors, spacing } from '@pixelsandpetals/ui';
-import { ProjectsSection } from '@pixelsandpetals/ui/components/ProjectsSection';
+import { spacing } from '@pixelsandpetals/ui';
 import { LiquidGlassHeader } from './components/LiquidGlassHeader';
+import SolutionsSection from './components/SolutionsSection';
+import QuickROICalculator from './components/QuickROICalculator';
+import ClientsSection from './components/ClientsSection';
+import AboutSection from './components/AboutSection';
+import ConnectionNexus from './components/ConnectionNexus';
+import { LiquidGlassView } from './components/LiquidGlassView';
+import { LiquidGlassButton } from './components/LiquidGlassButton';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
 // Sophisticated Hero Section Component with full web app features
 const SophisticatedHeroSection = () => {
+  const { colors } = useTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Use cases matching the web app exactly
+  // Real-world solutions matching the web app exactly
   const useCases = [
     {
       id: 'data-pipelines',
       title: 'Automate Data Pipelines',
       description: 'Streamline your data workflows with intelligent automation that processes, transforms, and delivers insights in real-time.',
       benefits: ['95% faster processing', 'Zero manual errors', 'Real-time insights'],
-      accentColor: colors.light.primaryAccent,
+      accentColor: colors.primaryAccent,
     },
     {
       id: 'ai-dashboards',
       title: 'AI-Powered Dashboards',
       description: 'Transform raw data into intelligent, predictive dashboards that anticipate trends and recommend actions.',
       benefits: ['Predictive analytics', 'Smart recommendations', 'Interactive visualizations'],
-      accentColor: colors.light.secondaryAccent,
+      accentColor: colors.secondaryAccent,
     },
     {
       id: 'security-modules',
       title: 'Enterprise Security Modules',
       description: 'Deploy bulletproof security frameworks with advanced threat detection, encryption, and compliance monitoring.',
       benefits: ['99.9% threat prevention', 'Compliance ready', 'Zero-trust architecture'],
-      accentColor: '#FF6B9D',
+      accentColor: colors.tertiaryAccent,
     },
     {
       id: 'cloud-infrastructure',
       title: 'Scalable Cloud Infrastructure',
       description: 'Build resilient, auto-scaling cloud architectures that grow with your business and optimize costs.',
       benefits: ['Auto-scaling', '99.99% uptime', '60% cost reduction'],
-      accentColor: '#4ECDC4',
+      accentColor: colors.quaternaryAccent,
+    },
+    {
+      id: 'mobile-apps',
+      title: 'Cross-Platform Mobile Apps',
+      description: 'Develop native-quality mobile experiences that work seamlessly across iOS, Android, and web platforms.',
+      benefits: ['Native performance', 'Single codebase', 'Faster deployment'],
+      accentColor: colors.quinaryAccent,
+    },
+    {
+      id: 'api-integration',
+      title: 'Seamless API Integration',
+      description: 'Connect and orchestrate multiple services with robust API gateways, webhooks, and real-time synchronization.',
+      benefits: ['Real-time sync', 'Error resilience', 'Scalable architecture'],
+      accentColor: colors.senaryAccent,
     },
   ];
 
   const heroStyles = StyleSheet.create({
     container: {
-      backgroundColor: colors.light.primaryBackground,
+      backgroundColor: colors.primaryBackground,
       paddingVertical: spacing[12],
+      paddingTop: Platform.OS === 'ios' ? 112 + spacing[8] : 100 + spacing[10],
     },
     heroContent: {
       paddingHorizontal: spacing[6],
@@ -56,14 +79,14 @@ const SophisticatedHeroSection = () => {
     heroTitle: {
       fontSize: 36,
       fontWeight: 'bold',
-      color: colors.light.textPrimary,
+      color: colors.textPrimary,
       textAlign: 'center',
       marginBottom: spacing[4],
       lineHeight: 42,
     },
     heroSubtitle: {
       fontSize: 18,
-      color: colors.light.textSecondary,
+      color: colors.textSecondary,
       textAlign: 'center',
       marginBottom: spacing[8],
       lineHeight: 26,
@@ -76,57 +99,25 @@ const SophisticatedHeroSection = () => {
       flexWrap: 'wrap',
       justifyContent: 'center',
     },
-    ctaButton: {
-      backgroundColor: colors.light.primaryAccent,
-      paddingHorizontal: spacing[8],
-      paddingVertical: spacing[4],
-      borderRadius: 12,
-      shadowColor: colors.light.shadowColor,
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-      shadowRadius: 12,
-      elevation: 8,
-    },
-    ctaButtonSecondary: {
-      backgroundColor: 'transparent',
-      borderWidth: 2,
-      borderColor: colors.light.primaryAccent,
-    },
-    ctaButtonText: {
-      color: '#FFFFFF',
-      fontSize: 16,
-      fontWeight: '600',
-      textAlign: 'center',
-    },
-    ctaButtonTextSecondary: {
-      color: colors.light.primaryAccent,
-    },
     carouselContainer: {
       paddingLeft: spacing[4],
     },
     useCaseCard: {
-      backgroundColor: colors.light.surfaceBackground,
       marginHorizontal: spacing[2],
-      padding: spacing[6],
-      borderRadius: 20,
       width: width * 0.8,
-      shadowColor: colors.light.shadowColor,
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.15,
-      shadowRadius: 24,
-      elevation: 8,
-      borderWidth: 1,
-      borderColor: colors.light.glassBorder,
+    },
+    cardContent: {
+      padding: spacing[6],
     },
     useCaseTitle: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: colors.light.textPrimary,
+      color: colors.textPrimary,
       marginBottom: spacing[3],
     },
     useCaseDescription: {
       fontSize: 16,
-      color: colors.light.textSecondary,
+      color: colors.textSecondary,
       lineHeight: 24,
       marginBottom: spacing[4],
     },
@@ -146,7 +137,7 @@ const SophisticatedHeroSection = () => {
     },
     benefitText: {
       fontSize: 14,
-      color: colors.light.textSecondary,
+      color: colors.textSecondary,
       fontWeight: '500',
       flex: 1,
     },
@@ -162,33 +153,42 @@ const SophisticatedHeroSection = () => {
       height: 8,
       borderRadius: 4,
       marginHorizontal: spacing[1],
-      backgroundColor: colors.light.textSubtle,
+      backgroundColor: colors.textSubtle,
     },
     paginationDotActive: {
-      backgroundColor: colors.light.primaryAccent,
+      backgroundColor: colors.primaryAccent,
       width: 24,
     },
   });
 
   const renderUseCase = ({ item }: { item: any }) => (
-    <View style={heroStyles.useCaseCard}>
-      <Text style={heroStyles.useCaseTitle}>{item.title}</Text>
-      <Text style={heroStyles.useCaseDescription}>{item.description}</Text>
+    <LiquidGlassView
+      style={heroStyles.useCaseCard}
+      variant={Platform.OS === 'ios' ? 'regular' : 'light'}
+      intensity={Platform.OS === 'ios' ? 70 : 50}
+      borderRadius={24}
+      showBorder={true}
+      showShadow={true}
+    >
+      <View style={heroStyles.cardContent}>
+        <Text style={heroStyles.useCaseTitle}>{item.title}</Text>
+        <Text style={heroStyles.useCaseDescription}>{item.description}</Text>
 
-      <View style={heroStyles.benefitsList}>
-        {item.benefits.map((benefit: string, benefitIndex: number) => (
-          <View key={benefitIndex} style={heroStyles.benefitItem}>
-            <View
-              style={[
-                heroStyles.benefitDot,
-                { backgroundColor: item.accentColor }
-              ]}
-            />
-            <Text style={heroStyles.benefitText}>{benefit}</Text>
-          </View>
-        ))}
+        <View style={heroStyles.benefitsList}>
+          {item.benefits.map((benefit: string, benefitIndex: number) => (
+            <View key={benefitIndex} style={heroStyles.benefitItem}>
+              <View
+                style={[
+                  heroStyles.benefitDot,
+                  { backgroundColor: item.accentColor }
+                ]}
+              />
+              <Text style={heroStyles.benefitText}>{benefit}</Text>
+            </View>
+          ))}
+        </View>
       </View>
-    </View>
+    </LiquidGlassView>
   );
 
   return (
@@ -196,23 +196,30 @@ const SophisticatedHeroSection = () => {
       {/* Hero Content */}
       <View style={heroStyles.heroContent}>
         <Text style={heroStyles.heroTitle}>
-          Transform Your Business with{' '}
-          <Text style={{ color: colors.light.primaryAccent }}>AI Intelligence</Text>
+          <Text style={{ color: colors.primaryAccent }}>Real-World Solutions</Text>
         </Text>
 
         <Text style={heroStyles.heroSubtitle}>
-          Unlock the power of artificial intelligence to automate workflows, gain predictive insights, and accelerate your digital transformation.
+          From system design to cloud deployment, we deliver cutting-edge software that solves complex business challenges at scale.
         </Text>
 
         {/* CTA Buttons */}
         <View style={heroStyles.ctaContainer}>
-          <TouchableOpacity style={heroStyles.ctaButton}>
-            <Text style={heroStyles.ctaButtonText}>Start Your Project</Text>
-          </TouchableOpacity>
+          <LiquidGlassButton
+            title='Start Your Project'
+            variant='primary'
+            size='medium'
+            blurIntensity={60}
+            onPress={() => console.log('Start Your Project pressed')}
+          />
 
-          <TouchableOpacity style={[heroStyles.ctaButton, heroStyles.ctaButtonSecondary]}>
-            <Text style={[heroStyles.ctaButtonText, heroStyles.ctaButtonTextSecondary]}>View Portfolio</Text>
-          </TouchableOpacity>
+          <LiquidGlassButton
+            title='View Portfolio'
+            variant='secondary'
+            size='medium'
+            blurIntensity={40}
+            onPress={() => console.log('View Portfolio pressed')}
+          />
         </View>
       </View>
 
@@ -255,7 +262,8 @@ const SophisticatedHeroSection = () => {
 // import { MobileAboutSection } from './components/MobileAboutSection';
 // import { MobileContactSection } from './components/MobileContactSection';
 
-export default function App() {
+const AppContent = () => {
+  const { colors } = useTheme();
   const [activeSection, setActiveSection] = useState('home');
 
   const handleNavigation = (sectionId: string) => {
@@ -266,52 +274,65 @@ export default function App() {
   // Navigation items matching web app structure
   const navItems = [
     {
-      id: "home",
-      label: "Home",
+      id: 'home',
+      label: 'Home',
       onPress: () => handleNavigation('home'),
       active: activeSection === 'home',
-      icon: "🏠"
+      icon: '🏠',
     },
     {
-      id: "projects",
-      label: "Solutions",
+      id: 'projects',
+      label: 'Solutions',
       onPress: () => handleNavigation('projects'),
       active: activeSection === 'projects',
-      icon: "🚀"
+      icon: '🚀',
     },
     {
-      id: "clients",
-      label: "Partners",
+      id: 'clients',
+      label: 'Partners',
       onPress: () => handleNavigation('clients'),
       active: activeSection === 'clients',
-      icon: "🤝"
+      icon: '🤝',
     },
     {
-      id: "about",
-      label: "About",
+      id: 'about',
+      label: 'About',
       onPress: () => handleNavigation('about'),
       active: activeSection === 'about',
-      icon: "👥"
+      icon: '👥',
     },
     {
-      id: "contact",
-      label: "Connect",
+      id: 'contact',
+      label: 'Connect',
       onPress: () => handleNavigation('contact'),
       active: activeSection === 'contact',
-      icon: "📧"
+      icon: '📧',
     },
     {
-      id: "resume",
-      label: "Resume",
+      id: 'resume',
+      label: 'Resume',
       onPress: () => handleNavigation('resume'),
       active: activeSection === 'resume',
-      icon: "📄"
+      icon: '📄',
     },
   ];
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.primaryBackground,
+    },
+    scrollContainer: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+    },
+  });
+
   return (
     <View style={styles.container}>
-      <StatusBar style="light" backgroundColor={colors.legacy.textDark} />
+      <StatusBar style="auto" />
 
       {/* Liquid Glass Header */}
       <LiquidGlassHeader items={navItems} activeSection={activeSection} />
@@ -324,28 +345,29 @@ export default function App() {
         {/* Hero Section - Full sophisticated UI matching web app */}
         <SophisticatedHeroSection />
 
-        {/* Projects Section - Now using shared cross-platform component */}
-        <ProjectsSection theme="light" />
+        {/* Solutions Section - Mobile-optimized version from web app */}
+        <SolutionsSection />
 
-        {/* About Section - Temporarily commented out */}
-        {/* <MobileAboutSection /> */}
+        {/* Quick ROI Calculator */}
+        <QuickROICalculator />
 
-        {/* Contact Section - Temporarily commented out */}
-        {/* <MobileContactSection /> */}
+        {/* Our Clients Section */}
+        <ClientsSection />
+
+        {/* About Section */}
+        <AboutSection />
+
+        {/* Connection Nexus */}
+        <ConnectionNexus />
       </ScrollView>
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.legacy.textDark,
-  },
-  scrollContainer: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-});
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
+  );
+}

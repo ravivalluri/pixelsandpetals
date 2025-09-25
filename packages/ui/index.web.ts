@@ -35,18 +35,3 @@ export * from './components/ExpertiseMatrix/index.web';
 
 // Adaptive Lumen Nav
 export * from './components/AdaptiveLumenNav/index.web';
-
-// Project Portal Quest
-export * from './components/ProjectPortalQuest/index.web';
-
-// Solution Flow
-export * from './components/SolutionFlow/index.web';
-
-// Project Constellation
-export * from './components/ProjectConstellation/index.web';
-
-// Expertise Matrix
-export * from './components/ExpertiseMatrix/index.web';
-
-// Adaptive Lumen Nav
-export * from './components/AdaptiveLumenNav/index.web';

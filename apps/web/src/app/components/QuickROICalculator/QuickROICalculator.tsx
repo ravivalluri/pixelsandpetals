@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useTheme } from "@/app/context/ThemeContext";
-import { spacing, typography } from '@pixelsandpetals/ui';
+import { typography } from '@pixelsandpetals/ui';
 import styles from './QuickROICalculator.module.css';
 
 interface CalculatorResults {

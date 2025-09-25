@@ -66,7 +66,7 @@ export const PixelsPetalsLogo: React.FC<PixelsPetalsLogoProps> = ({
           x="0"
           y="42"
           fill={taglineColor}
-          fontSize="22"
+          fontSize="28"
           fontWeight="500"
           fontFamily="Inter, system-ui, -apple-system, sans-serif"
         >

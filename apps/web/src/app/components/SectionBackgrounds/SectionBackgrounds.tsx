@@ -1,5 +1,5 @@
 "use client";
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import { useTheme } from '../../context/ThemeContext';
 
 // Animated gradient backgrounds for different sections
@@ -153,7 +153,7 @@ export const MeshGradient: React.FC<MeshGradientProps> = ({
   colors = undefined,
   opacity = 0.1,
 }) => {
-  const { theme, colors: themeColors } = useTheme();
+  const { colors: themeColors } = useTheme();
   
   // Use theme colors if no colors are provided
   const meshColors = colors || [
@@ -209,7 +209,7 @@ export const MeshGradient: React.FC<MeshGradientProps> = ({
 // Section wrapper component with background
 interface SectionWrapperProps {
   children: React.ReactNode;
-  section: keyof typeof sectionBackgrounds;
+  section?: keyof typeof sectionBackgrounds;
   particles?: boolean;
   mesh?: boolean;
   className?: string;
@@ -225,6 +225,11 @@ export const SectionWrapper: React.FC<SectionWrapperProps> = ({
   id,
 }) => {
   const { colors } = useTheme();
+
+  // section parameter is passed in to determine which background to use, 
+  // but for now using a default gradient to keep the theme consistent
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _section = section;
 
   // Create theme-aware background instead of hardcoded dark backgrounds
   const themeBackground = {
