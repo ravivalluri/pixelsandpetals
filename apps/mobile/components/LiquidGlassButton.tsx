@@ -86,7 +86,7 @@ export const LiquidGlassButton: React.FC<LiquidGlassButtonProps> = ({
           variant: glassVariant,
           intensity: blurIntensity * 0.7,
           showBorder: true,
-          showShadow: false,
+          showShadow: true, // Enable shadow for both variants
         },
         containerStyle: {
           backgroundColor: Platform.OS === 'ios'

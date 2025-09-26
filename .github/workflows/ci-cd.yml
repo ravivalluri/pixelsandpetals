@@ -31,9 +31,13 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
-      - name: TypeScript type check
+      - name: TypeScript type check - Web
         run: npx tsc --noEmit
         working-directory: ./apps/web
+
+      - name: TypeScript type check - Backend
+        run: npx tsc --noEmit
+        working-directory: ./apps/backend
 
   # Unit and Integration Tests
   test:
@@ -99,8 +103,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build application
+      - name: Build Web application
         run: npm run build
+        working-directory: ./apps/web
+        env:
+          NODE_ENV: production
+
+      - name: Build Backend application
+        run: npm run build
+        working-directory: ./apps/backend
         env:
           NODE_ENV: production
 
@@ -111,6 +122,7 @@ jobs:
           path: |
             apps/web/.next/
             apps/web/out/
+            apps/backend/dist/
           retention-days: 7
 
   # Build and Push Docker Image
@@ -136,15 +148,27 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push Docker image
+      - name: Build and push Web Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./apps/web/Dockerfile
           push: true
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
-            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}-web:latest
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}-web:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and push Backend Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./apps/backend
+          file: ./apps/backend/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}-backend:latest
+            ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}-backend:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -165,19 +189,27 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Deploy to ECS
+      - name: Deploy Web service to ECS
         run: |
-          # Update ECS service with new image
+          # Update ECS service with new web image
           aws ecs update-service \
             --cluster pixelsandpetals-cluster \
-            --service pixelsandpetals-service \
+            --service pixelsandpetals-web-service \
             --force-new-deployment
 
-      - name: Wait for deployment
+      - name: Deploy Backend service to ECS
+        run: |
+          # Update ECS service with new backend image
+          aws ecs update-service \
+            --cluster pixelsandpetals-cluster \
+            --service pixelsandpetals-backend-service \
+            --force-new-deployment
+
+      - name: Wait for deployments
         run: |
           aws ecs wait services-stable \
             --cluster pixelsandpetals-cluster \
-            --services pixelsandpetals-service
+            --services pixelsandpetals-web-service pixelsandpetals-backend-service
 
   # Deploy Static Assets to S3/CloudFront
   deploy-static-assets:

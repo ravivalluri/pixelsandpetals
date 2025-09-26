@@ -7,13 +7,19 @@
     "scripts": {
         "dev": "cd apps/web && next dev --turbopack",
         "dev:mobile": "cd apps/mobile && expo start",
+        "dev:backend": "cd apps/backend && npm run dev",
         "build": "cd apps/web && next build --turbopack",
+        "build:backend": "cd apps/backend && npm run build",
         "start": "cd apps/web && next start",
+        "start:backend": "cd apps/backend && npm start",
         "lint": "cd apps/web && eslint",
         "mobile:ios": "cd apps/mobile && expo run:ios",
         "mobile:android": "cd apps/mobile && expo run:android",
         "type-check": "tsc --noEmit",
-        "type-check:mobile": "cd apps/mobile && tsc --noEmit"
+        "type-check:mobile": "cd apps/mobile && tsc --noEmit",
+        "type-check:backend": "cd apps/backend && tsc --noEmit",
+        "setup:backend": "cd apps/backend && npm run setup",
+        "extract-frontend": "cd apps/backend && npm run extract-frontend"
     },
     "repository": {
         "type": "git",

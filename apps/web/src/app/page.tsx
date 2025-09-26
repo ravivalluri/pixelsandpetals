@@ -11,9 +11,11 @@ import { HeroCTA } from "@/app/components/HeroCTA/HeroCTA";
 import { LiquidGlassCursor } from "@/app/components/LiquidGlassCursor/LiquidGlassCursor";
 import { SectionWrapper } from "@/app/components/SectionBackgrounds/SectionBackgrounds";
 import { LiquidGlassStyles } from "@/app/components/LiquidGlass/LiquidGlassComponents";
+import { useContentItem } from "@/lib/hooks/useContent";
 
 export default function Home() {
   const { colors } = useTheme();
+  const { content: homeContent, loading, error } = useContentItem(undefined, 'home', 'page');
 
   // Apply theme to body
   React.useEffect(() => {
@@ -21,6 +23,37 @@ export default function Home() {
     document.body.style.transition = 'background 0.3s ease';
     document.body.style.minHeight = '100vh';
   }, [colors]);
+
+  // Update document title and meta description from content
+  React.useEffect(() => {
+    if (homeContent?.content) {
+      document.title = homeContent.content.hero?.title || 'Pixels & Petals';
+
+      // Update meta description
+      const metaDescription = document.querySelector('meta[name="description"]');
+      if (metaDescription && homeContent.content.meta?.description) {
+        metaDescription.setAttribute('content', homeContent.content.meta.description);
+      }
+    }
+  }, [homeContent]);
+
+  if (loading) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: `linear-gradient(135deg, ${colors.primaryBackground} 0%, ${colors.secondaryBackground} 100%)`
+      }}>
+        <div style={{ color: colors.textPrimary, fontSize: '1.2rem' }}>Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    console.warn('Failed to load home content, falling back to static content:', error);
+  }
 
   return (
     <>

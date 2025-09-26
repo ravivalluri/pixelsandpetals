@@ -10,6 +10,8 @@ interface GlassCardProps {
   icon?: React.ReactNode;
   tags?: string[];
   color?: string;
+  slug?: string;
+  onClick?: () => void;
 }
 
 export const GlassCard: React.FC<GlassCardProps> = ({
@@ -19,6 +21,8 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   icon,
   tags = [],
   color,
+  slug,
+  onClick,
 }) => {
   const { theme, colors } = useTheme();
 
@@ -34,6 +38,36 @@ export const GlassCard: React.FC<GlassCardProps> = ({
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Update CSS variables when theme changes
+  React.useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--card-shadow-light',
+      colors.cardShadow
+    );
+    document.documentElement.style.setProperty(
+      '--card-shadow-dark',
+      colors.cardShadow
+    );
+    document.documentElement.style.setProperty(
+      '--card-shadow-hover-light',
+      theme === 'dark' 
+        ? `0 16px 56px ${colors.primaryAccent}55` 
+        : `0 16px 56px ${colors.primaryAccent}70`
+    );
+    document.documentElement.style.setProperty(
+      '--card-shadow-hover-dark',
+      `0 16px 56px ${colors.primaryAccent}55`
+    );
+    document.documentElement.style.setProperty(
+      '--button-shadow-light',
+      colors.buttonShadow
+    );
+    document.documentElement.style.setProperty(
+      '--button-shadow-dark',
+      colors.buttonShadow
+    );
+  }, [theme, colors]);
 
   const getCardClass = () => {
     let classes = `${styles.card} ${theme === 'dark' ? styles.glassEnhancedDark : styles.glassEnhancedLight}`;
@@ -93,11 +127,21 @@ export const GlassCard: React.FC<GlassCardProps> = ({
     }
   };
 
-  return (
+  const handleCardClick = () => {
+    if (onClick) {
+      onClick();
+    } else if (slug) {
+      window.location.href = `/projects/${slug}`;
+    }
+  };
+
+  const cardElement = (
     <article
-      className={getCardClass()}
+      className={`${getCardClass()} ${(onClick || slug) ? styles.clickable : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={handleCardClick}
+      style={{ cursor: (onClick || slug) ? 'pointer' : 'default' }}
     >
       {/* Background accent for color theme */}
       {color && (
@@ -112,14 +156,16 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       <div
         className={styles.image}
         style={{
-          background: icon
-            ? color
+          ...(icon && !image ? {
+            backgroundImage: color
               ? `linear-gradient(135deg, ${color}20, ${color}10)`
               : `linear-gradient(135deg, ${colors.primaryAccent}20, ${colors.secondaryAccent}20)`
-            : undefined,
-          backgroundSize: image ? "cover" : undefined,
-          backgroundPosition: image ? "center" : undefined,
-          backgroundImage: image ? `url(${image})` : undefined,
+          } : {}),
+          ...(image ? {
+            backgroundImage: `url(${image})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          } : {}),
         }}
         role="img"
         aria-label={title}
@@ -183,4 +229,6 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       </div>
     </article>
   );
+
+  return cardElement;
 };

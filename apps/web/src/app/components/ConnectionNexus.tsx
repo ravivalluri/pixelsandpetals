@@ -5,9 +5,11 @@ import { useTheme } from "@/app/context/ThemeContext";
 import styles from './ConnectionNexus/ConnectionNexus.module.css';
 import emailjs from '@emailjs/browser';
 import { FaLinkedin, FaGithub, FaMedium, FaStackOverflow, FaNewspaper, FaEnvelope, FaPhone, FaBuilding } from 'react-icons/fa';
+import { useContentItem } from "@/lib/hooks/useContent";
 
 export const ConnectionNexus: React.FC = () => {
   const { theme, colors } = useTheme();
+  const { content: contactContent, loading, error } = useContentItem(undefined, 'contact', 'page');
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -135,7 +137,23 @@ export const ConnectionNexus: React.FC = () => {
     }
   };
 
-  const contactMethods = [
+  // Icon mapping for contact methods
+  const iconMap: Record<string, React.ReactNode> = {
+    'email': <FaEnvelope />,
+    'phone': <FaPhone />,
+    'building': <FaBuilding />
+  };
+
+  const socialIconMap: Record<string, React.ReactNode> = {
+    'linkedin': <FaLinkedin />,
+    'github': <FaGithub />,
+    'medium': <FaMedium />,
+    'newsletter': <FaNewspaper />,
+    'stackoverflow': <FaStackOverflow />
+  };
+
+  // Fallback data
+  const fallbackContactMethods = [
     {
       title: "Email",
       value: "info@pixelspetals.com",
@@ -156,13 +174,54 @@ export const ConnectionNexus: React.FC = () => {
     }
   ];
 
-  const socialLinks = [
+  const fallbackSocialLinks = [
     { name: "LinkedIn", icon: <FaLinkedin />, url: "https://www.linkedin.com/in/ravivalluri/" },
     { name: "GitHub", icon: <FaGithub />, url: "https://github.com/ravivalluri" },
     { name: "Medium", icon: <FaMedium />, url: "https://medium.com/@ravivalluri" },
     { name: "SubStack", icon: <FaNewspaper />, url: "https://substack.com/@bloodfeather?"},
     { name: "StackOverflow", icon: <FaStackOverflow />, url: "https://stackoverflow.com/users/10908679/compileravi"}
   ];
+
+  // Get dynamic content or use fallbacks
+  const sectionTitle = contactContent?.content?.hero?.title || "Connection Nexus";
+  const sectionSubtitle = contactContent?.content?.hero?.subtitle || "Open a direct, transparent channel for communication";
+
+  const directChannelsTitle = contactContent?.content?.directChannels?.title || "Direct Channels";
+  const locationTitle = contactContent?.content?.location?.title || "Our Location";
+  const socialTitle = contactContent?.content?.socialLinks?.title || "Connect";
+
+  // Transform API data to component format
+  const contactMethods = contactContent?.content?.directChannels?.methods?.map(method => ({
+    title: method.title,
+    value: method.value,
+    icon: iconMap[method.icon] || <FaEnvelope />,
+    action: method.action
+  })) || fallbackContactMethods;
+
+  const socialLinks = contactContent?.content?.socialLinks?.links?.map(link => ({
+    name: link.name,
+    icon: socialIconMap[link.icon] || <FaLinkedin />,
+    url: link.url
+  })) || fallbackSocialLinks;
+
+  if (loading) {
+    return (
+      <section className={styles.section} style={{
+        background: `linear-gradient(135deg, ${colors.primaryBackground} 0%, ${colors.secondaryBackground} 100%)`,
+        padding: "80px 20px",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '400px'
+      }}>
+        <div style={{ color: colors.textPrimary, fontSize: '1.2rem' }}>Loading contact information...</div>
+      </section>
+    );
+  }
+
+  if (error) {
+    console.warn('Failed to load contact content, using fallback:', error);
+  }
 
   return (
     <section 
@@ -178,7 +237,7 @@ export const ConnectionNexus: React.FC = () => {
       }}
     >
       <div className={styles.container} style={{ position: "relative", maxWidth: "1200px", margin: "0 auto" }}>
-        <h2 
+        <h2
           className={styles.title}
           style={{
             ...typography.heading,
@@ -189,9 +248,9 @@ export const ConnectionNexus: React.FC = () => {
             color: colors.textPrimary,
           }}
         >
-          Connection Nexus
+          {sectionTitle}
         </h2>
-        <p 
+        <p
           className={styles.subtitle}
           style={{
             ...typography.body,
@@ -203,7 +262,7 @@ export const ConnectionNexus: React.FC = () => {
             textAlign: "center",
           }}
         >
-          Open a direct, transparent channel for communication
+          {sectionSubtitle}
         </p>
         
         <div className={styles.grid} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "48px" }}>
@@ -494,7 +553,7 @@ export const ConnectionNexus: React.FC = () => {
           {/* Direct Channel Information */}
           <div className={styles.infoContainer} style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
             <div>
-              <h3 
+              <h3
                 style={{
                   ...typography.heading,
                   fontSize: "1.8rem",
@@ -503,7 +562,7 @@ export const ConnectionNexus: React.FC = () => {
                   color: colors.textPrimary,
                 }}
               >
-                Direct Channels
+                {directChannelsTitle}
               </h3>
               <div className={styles.contactMethods} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 {contactMethods.map((method, index) => (
@@ -555,7 +614,7 @@ export const ConnectionNexus: React.FC = () => {
 
             {/* Location Orb */}
             <div>
-              <h3 
+              <h3
                 style={{
                   ...typography.heading,
                   fontSize: "1.8rem",
@@ -564,7 +623,7 @@ export const ConnectionNexus: React.FC = () => {
                   color: colors.textPrimary,
                 }}
               >
-                Our Location
+                {locationTitle}
               </h3>
               <motion.div 
                 className={styles.locationOrb}
@@ -601,7 +660,7 @@ export const ConnectionNexus: React.FC = () => {
                   color: colors.textPrimary,
                 }}
               >
-                Connect
+                {socialTitle}
               </h3>
               <div className={styles.socialLinksContainer} style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
                 {socialLinks.map((link, index) => (

@@ -11,6 +11,7 @@ interface LiquidGlassViewProps {
   borderRadius?: number;
   showBorder?: boolean;
   showShadow?: boolean;
+  shadowType?: 'card' | 'button';
 }
 
 export const LiquidGlassView: React.FC<LiquidGlassViewProps> = ({
@@ -21,6 +22,7 @@ export const LiquidGlassView: React.FC<LiquidGlassViewProps> = ({
   borderRadius = 16,
   showBorder = true,
   showShadow = true,
+  shadowType = 'card',
 }) => {
   const { colors, theme } = useTheme();
 
@@ -49,6 +51,50 @@ export const LiquidGlassView: React.FC<LiquidGlassViewProps> = ({
     }
   };
 
+  // Determine shadow values based on shadowType
+  const getShadowStyle = () => {
+    if (!showShadow) return {};
+
+    const isCardShadow = shadowType === 'card';
+    
+    // For card shadows
+    if (isCardShadow) {
+      return theme === 'dark' 
+        ? {
+            shadowColor: '#6699FF',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.25,
+            shadowRadius: 16,
+            elevation: 8,
+          }
+        : {
+            shadowColor: '#6699FF',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.35,
+            shadowRadius: 16,
+            elevation: 8,
+          };
+    } 
+    // For button shadows
+    else {
+      return theme === 'dark'
+        ? {
+            shadowColor: '#6699FF',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 10,
+            elevation: 6,
+          }
+        : {
+            shadowColor: '#6699FF',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.4,
+            shadowRadius: 10,
+            elevation: 6,
+          };
+    }
+  };
+
   // Fallback styles for Android
   const androidFallbackStyle = {
     backgroundColor: theme === 'dark'
@@ -66,7 +112,7 @@ export const LiquidGlassView: React.FC<LiquidGlassViewProps> = ({
       borderWidth: showBorder ? 1 : 0,
       overflow: 'hidden' as const,
     },
-    showShadow && styles.shadow,
+    getShadowStyle(),
     Platform.OS === 'android' && androidFallbackStyle,
   ].filter(Boolean);
 
@@ -127,7 +173,7 @@ const styles = StyleSheet.create({
   shadow: {
     shadowColor: '#6699FF',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.35,
     shadowRadius: 20,
     elevation: 12,
   },

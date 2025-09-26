@@ -1,0 +1,36 @@
+{
+  "name": "@pixelsandpetals/backend",
+  "version": "1.0.0",
+  "description": "Backend service for Pixels & Petals with DynamoDB integration",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "create-table": "tsx scripts/create-dynamodb-table.ts",
+    "seed": "tsx scripts/seed-data.ts",
+    "extract-frontend": "tsx scripts/extract-frontend-content.ts",
+    "setup": "npm run create-table && npm run seed"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.658.1",
+    "@aws-sdk/lib-dynamodb": "^3.658.1",
+    "express": "^4.21.1",
+    "cors": "^2.8.5",
+    "helmet": "^8.0.0",
+    "dotenv": "^16.4.7",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^22.8.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "eslint": "^9.13.0",
+    "@typescript-eslint/eslint-plugin": "^8.10.0",
+    "@typescript-eslint/parser": "^8.10.0"
+  }
+}

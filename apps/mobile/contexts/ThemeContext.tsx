@@ -30,6 +30,8 @@ interface ThemeColors {
   // Shadows
   shadowColor: string;
   dropShadow: string;
+  cardShadow: string;
+  buttonShadow: string;
 }
 
 interface ThemeContextType {
@@ -59,6 +61,8 @@ const lightColors: ThemeColors = {
 
   shadowColor: 'rgba(102, 153, 255, 0.3)',
   dropShadow: '0 10px 30px rgba(102, 153, 255, 0.3)',
+  cardShadow: '0 12px 48px rgba(102, 153, 255, 0.35)',
+  buttonShadow: '0 4px 20px rgba(102, 153, 255, 0.4)',
 };
 
 const darkColors: ThemeColors = {
@@ -82,6 +86,8 @@ const darkColors: ThemeColors = {
 
   shadowColor: 'rgba(102, 153, 255, 0.4)',
   dropShadow: '0 10px 30px rgba(102, 153, 255, 0.4)',
+  cardShadow: '0 12px 48px rgba(102, 153, 255, 0.25)',
+  buttonShadow: '0 4px 20px rgba(102, 153, 255, 0.3)',
 };
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);

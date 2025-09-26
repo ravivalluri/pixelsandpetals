@@ -3,6 +3,7 @@ import React from "react";
 import { GlassCard } from "@/app/components/GlassCard";
 import { useTheme } from "@/app/context/ThemeContext";
 import styles from './ProjectsSection/ProjectsSection.module.css';
+import { useContentItem, useContent } from "@/lib/hooks/useContent";
 
 // SVG Icons for projects
 const OTPIcon = ({ className }: { className?: string }) => (
@@ -91,8 +92,21 @@ const AIIcon = ({ className }: { className?: string }) => (
 
 export const ProjectsSection: React.FC = () => {
   const { colors } = useTheme();
+  const { content: projectsContent, loading, error } = useContentItem(undefined, 'projects', 'page');
+  const { content: projectItems } = useContent({ type: 'project', status: 'published' });
 
-  const projects = [
+  // Icon mapping for projects
+  const iconMap: Record<string, React.ReactNode> = {
+    'otp-widget': <OTPIcon className={styles.projectIcon} />,
+    'eks-kafka-pipeline': <KafkaIcon className={styles.projectIcon} />,
+    'design-system': <DesignSystemIcon className={styles.projectIcon} />,
+    'healthcare-dashboard': <HealthcareIcon className={styles.projectIcon} />,
+    'e-commerce-mobile-app': <EcommerceIcon className={styles.projectIcon} />,
+    'ai-content-generator': <AIIcon className={styles.projectIcon} />
+  };
+
+  // Fallback projects if API fails
+  const fallbackProjects = [
     {
       title: "OTP Widget",
       subtitle: "Secure authentication microservice",
@@ -137,6 +151,45 @@ export const ProjectsSection: React.FC = () => {
     },
   ];
 
+  // Get dynamic content from API or use fallback
+  const sectionTitle = projectsContent?.content?.hero?.title || "Our Solutions";
+  const sectionSubtitle = projectsContent?.content?.hero?.subtitle || "Explore our portfolio of full-stack development, system design, and cloud engineering—real-world implementations that solve complex business challenges.";
+
+  // Transform API projects to match component structure
+  const dynamicProjects = projectItems?.map(project => {
+    const content = project.content;
+    return {
+      title: project.title,
+      subtitle: content?.hero?.subtitle || content?.description || "",
+      icon: iconMap[project.slug] || <DesignSystemIcon className={styles.projectIcon} />,
+      tags: content?.technologies?.slice(0, 3) || content?.tags || [],
+      color: content?.color || "#45B7D1",
+      slug: project.slug
+    };
+  }) || [];
+
+  // Use dynamic projects if available, otherwise use fallback
+  const projects = dynamicProjects.length > 0 ? dynamicProjects : fallbackProjects;
+
+  if (loading) {
+    return (
+      <section className={styles.section} style={{
+        background: `linear-gradient(135deg, ${colors.primaryBackground} 0%, ${colors.secondaryBackground} 100%)`,
+        padding: "120px 20px 80px 20px",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '400px'
+      }}>
+        <div style={{ color: colors.textPrimary, fontSize: '1.2rem' }}>Loading projects...</div>
+      </section>
+    );
+  }
+
+  if (error) {
+    console.warn('Failed to load projects content, using fallback:', error);
+  }
+
   const typography = {
     heading: {
       fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -177,9 +230,9 @@ export const ProjectsSection: React.FC = () => {
             color: colors.textPrimary,
           }}
         >
-          Our Solutions
+          {sectionTitle}
         </h2>
-        <p 
+        <p
           className={styles.subtitle}
           style={{
             ...typography.body,
@@ -191,7 +244,7 @@ export const ProjectsSection: React.FC = () => {
             textAlign: "center",
           }}
         >
-          Explore our portfolio of full-stack development, system design, and cloud engineering—real-world implementations that solve complex business challenges.
+          {sectionSubtitle}
         </p>
         <div className={styles.grid}>
           {projects.map((project, index) => (

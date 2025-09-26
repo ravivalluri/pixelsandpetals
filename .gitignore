@@ -255,3 +255,18 @@ CLAUDE.md
 
 #Qwen
 QWEN.md
+
+
+# env
+.env
+.env.local
+.env.production
+
+# terraform
+terraform.tfvars.example
+
+# md files
+CONTENT_MIGRATION.md
+DEPLOYMENT.md
+DYNAMIC_CONTENT_IMPLEMENTATION.md
+MOBILE_INTEGRATION.md

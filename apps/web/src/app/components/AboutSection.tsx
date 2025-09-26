@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@/app/context/ThemeContext";
 import styles from './AboutSection/AboutSection.module.css';
+import { useContentItem } from "@/lib/hooks/useContent";
 
 // Interactive Tech Journey Component
 const InteractiveTechJourney: React.FC = () => {
@@ -178,8 +179,10 @@ const InteractiveTechJourney: React.FC = () => {
 
 export const AboutSection: React.FC = () => {
   const { theme } = useTheme();
+  const { content: aboutContent, loading, error } = useContentItem(undefined, 'about', 'page');
 
-  const teamMembers = [
+  // Fallback data if API fails
+  const fallbackTeamMembers = [
     {
       name: "Ravi Valluri",
       role: "Founder & CEO",
@@ -196,7 +199,7 @@ export const AboutSection: React.FC = () => {
     },
   ];
 
-  const values = [
+  const fallbackValues = [
     {
       title: "Innovation",
       description: "We anticipate technology trends and leverage modern frameworks, cloud architectures, and best practices to deliver cutting-edge solutions.",
@@ -223,7 +226,38 @@ export const AboutSection: React.FC = () => {
     }
   ];
 
-  
+  // Get dynamic content or use fallbacks
+  const sectionTitle = aboutContent?.content?.hero?.title || "About Us";
+  const sectionSubtitle = aboutContent?.content?.hero?.subtitle || "Engineering scalable software. Designing seamless digital experiences.";
+  const storyTitle = aboutContent?.content?.story?.title || "Our Story";
+  const storyContent = aboutContent?.content?.story?.content || [
+    'Founded in 2018, Pixels & Petals started as a small team of developers and designers united by a vision: to build digital products that are both high-performing and elegantly designed.',
+    'Today, we\'ve grown into a cross-functional team of engineers, architects, and UX specialists, delivering web and mobile applications, cloud-native architectures, and scalable platforms. We collaborate with startups and enterprises across industries, turning complex technical challenges into innovative, user-centered solutions.'
+  ];
+
+  const teamMembers = aboutContent?.content?.team?.members || fallbackTeamMembers;
+  const values = aboutContent?.content?.values || fallbackValues;
+  const teamTitle = aboutContent?.content?.team?.title || "Meet Our Team";
+  const teamSubtitle = aboutContent?.content?.team?.subtitle || "Our team of engineers, designers, and cloud architects brings together deep technical expertise and creative problem-solving. We collaborate closely to deliver scalable, high-performance software solutions that drive real-world impact.";
+
+  if (loading) {
+    return (
+      <section className={`${styles.section} ${theme === 'dark' ? styles.sectionDark : styles.sectionLight}`}>
+        <div className={styles.container} style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '400px'
+        }}>
+          <div style={{ color: theme === 'dark' ? '#ffffff' : '#1a1a1a', fontSize: '1.2rem' }}>Loading about content...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    console.warn('Failed to load about content, using fallback:', error);
+  }
 
 
   return (
@@ -235,12 +269,12 @@ export const AboutSection: React.FC = () => {
         <h2
           className={`${styles.sectionHeading} ${theme === 'dark' ? styles.sectionHeadingDark : styles.sectionHeadingLight}`}
         >
-          About Us
+          {sectionTitle}
         </h2>
         <p
           className={`${styles.subtitle} ${styles.sectionSubtitle} ${theme === 'dark' ? styles.sectionSubtitleDark : styles.sectionSubtitleLight}`}
         >
-          Engineering scalable software. Designing seamless digital experiences.
+          {sectionSubtitle}
         </p>
         
         <div className={styles.contentGrid}>
@@ -248,18 +282,16 @@ export const AboutSection: React.FC = () => {
             <h3
               className={`${styles.storyHeading} ${theme === 'dark' ? styles.storyHeadingDark : styles.storyHeadingLight}`}
             >
-              Our Story
+              {storyTitle}
             </h3>
-            <p
-              className={`${styles.storyParagraph} ${theme === 'dark' ? styles.storyParagraphDark : styles.storyParagraphLight}`}
-            >
-              Founded in 2018, Pixels & Petals started as a small team of developers and designers united by a vision: to build digital products that are both high-performing and elegantly designed.
-            </p>
-            <p
-              className={`${styles.storyParagraph} ${theme === 'dark' ? styles.storyParagraphDark : styles.storyParagraphLight}`}
-            >
-              Today, we&apos;ve grown into a cross-functional team of engineers, architects, and UX specialists, delivering web and mobile applications, cloud-native architectures, and scalable platforms. We collaborate with startups and enterprises across industries, turning complex technical challenges into innovative, user-centered solutions.
-            </p>
+            {storyContent.map((paragraph: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined, index: React.Key | null | undefined) => (
+              <p
+                key={index}
+                className={`${styles.storyParagraph} ${theme === 'dark' ? styles.storyParagraphDark : styles.storyParagraphLight}`}
+              >
+                {paragraph}
+              </p>
+            ))}
           </div>
           <div className={styles.storyImage}>
             <InteractiveTechJourney />
@@ -272,7 +304,7 @@ export const AboutSection: React.FC = () => {
           Our Values
         </h3>
         <div className={styles.valuesGrid}>
-          {values.map((value, index) => {
+          {values.map((value: { color: any; icon: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; title: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; description: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => {
             return (
               <div
                 key={index}
@@ -343,16 +375,15 @@ export const AboutSection: React.FC = () => {
         <h3
           className={`${styles.teamHeading} ${theme === 'dark' ? styles.teamHeadingDark : styles.teamHeadingLight}`}
         >
-          Meet Our Team
+          {teamTitle}
         </h3>
         <p
           className={`${styles.teamSubheadline} ${theme === 'dark' ? styles.teamSubheadlineDark : styles.teamSubheadlineLight}`}
         >
-          Our team of engineers, designers, and cloud architects brings together deep technical expertise and creative problem-solving.
-          We collaborate closely to deliver scalable, high-performance software solutions that drive real-world impact.
+          {teamSubtitle}
         </p>
         <div className={styles.teamGrid}>
-          {teamMembers.map((member, index) => (
+          {teamMembers.map((member: { memoji: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; name: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; role: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; bio: string | number | bigint | boolean | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Promise<string | number | bigint | boolean | React.ReactPortal | React.ReactElement<unknown, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | null | undefined> | null | undefined; }, index: React.Key | null | undefined) => (
             <div
               key={index}
               className={`${styles.teamMember} ${styles.teamMemberCard} ${theme === 'dark' ? styles.glassCardDark : styles.glassCardLight}`}

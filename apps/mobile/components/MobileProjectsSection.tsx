@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { spacing } from '@pixelsandpetals/ui';
 import { useTheme } from '../contexts/ThemeContext';
+import { useContent, useContentItem } from '../hooks/useContent';
 
-const projects = [
+// Fallback projects if API fails
+const fallbackProjects = [
   {
     id: 'ai-innovation',
     title: 'AI & Innovation',
@@ -34,16 +36,61 @@ const projects = [
   },
 ];
 
+// Icon mapping for projects from API
+const projectIconMap: Record<string, string> = {
+  'otp-widget': '🔐',
+  'eks-kafka-pipeline': '⚡',
+  'design-system': '🎨',
+  'healthcare-dashboard': '🏥',
+  'e-commerce-mobile-app': '🛒',
+  'ai-content-generator': '🤖',
+};
+
 export const MobileProjectsSection: React.FC = () => {
   const { colors } = useTheme();
+  const { content: projectsContent, loading: sectionLoading, error: sectionError } = useContentItem(undefined, 'projects', 'page');
+  const { content: projectItems, loading: projectsLoading, error: projectsError } = useContent({ type: 'project', status: 'published' });
+
+  // Transform API projects to mobile format
+  const dynamicProjects = projectItems?.map(project => {
+    const content = project.content;
+    return {
+      id: project.slug,
+      title: project.title,
+      description: content?.hero?.subtitle || content?.overview?.description || project.title,
+      icon: projectIconMap[project.slug] || '📱',
+      features: content?.technologies?.slice(0, 3) || content?.features?.slice(0, 3) || ['Technology', 'Innovation', 'Design'],
+    };
+  }) || [];
+
+  // Use dynamic projects if available, otherwise fallback
+  const projects = dynamicProjects.length > 0 ? dynamicProjects : fallbackProjects;
+
+  // Get dynamic content or use fallbacks
+  const sectionTitle = projectsContent?.content?.hero?.title || "Our Solutions";
+  const sectionSubtitle = projectsContent?.content?.hero?.subtitle || "Comprehensive digital services tailored to your needs";
+
+  const isLoading = sectionLoading || projectsLoading;
+  const hasError = sectionError || projectsError;
+
+  if (hasError) {
+    console.warn('Mobile projects section error:', hasError);
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: colors.primaryBackground }]}>
       <View style={styles.header}>
-        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Our Solutions</Text>
+        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>{sectionTitle}</Text>
         <Text style={[styles.sectionSubtitle, { color: colors.textSubtle }]}>
-          Comprehensive digital services tailored to your needs
+          {sectionSubtitle}
         </Text>
+        {isLoading && (
+          <ActivityIndicator
+            size="small"
+            color={colors.primaryAccent}
+            style={styles.loadingIndicator}
+          />
+        )}
       </View>
 
       <ScrollView
@@ -123,11 +170,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 8,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 8,
   },
   cardHeader: {
     alignItems: 'center',
@@ -170,5 +217,8 @@ const styles = StyleSheet.create({
   learnMore: {
     fontSize: 14,
     fontWeight: '600',
+  },
+  loadingIndicator: {
+    marginTop: spacing[3],
   },
 });
