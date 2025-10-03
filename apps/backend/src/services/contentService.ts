@@ -108,7 +108,7 @@ export class ContentService {
       updatedAt: new Date().toISOString(),
     };
 
-    const updateExpressions = [];
+    const updateExpressions: string[] = [];
     const expressionAttributeValues: any = {};
     const expressionAttributeNames: any = {};
 

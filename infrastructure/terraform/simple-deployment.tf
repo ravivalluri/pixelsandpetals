@@ -240,6 +240,57 @@ resource "aws_s3_bucket_policy" "frontend" {
   depends_on = [aws_s3_bucket_public_access_block.frontend]
 }
 
+# Data source for Route 53 hosted zone
+data "aws_route53_zone" "main" {
+  count = var.domain_name != "" ? 1 : 0
+  name  = var.domain_name
+}
+
+# SSL Certificate for custom domain
+resource "aws_acm_certificate" "frontend" {
+  count           = var.domain_name != "" ? 1 : 0
+  domain_name     = var.domain_name
+  subject_alternative_names = ["www.${var.domain_name}"]
+  validation_method = "DNS"
+
+  tags = {
+    Name = "${var.project_name}-ssl-cert"
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# Certificate validation records
+resource "aws_route53_record" "cert_validation" {
+  for_each = var.domain_name != "" ? {
+    for dvo in aws_acm_certificate.frontend[0].domain_validation_options : dvo.domain_name => {
+      name   = dvo.resource_record_name
+      record = dvo.resource_record_value
+      type   = dvo.resource_record_type
+    }
+  } : {}
+
+  allow_overwrite = true
+  name            = each.value.name
+  records         = [each.value.record]
+  ttl             = 60
+  type            = each.value.type
+  zone_id         = data.aws_route53_zone.main[0].zone_id
+}
+
+# Certificate validation
+resource "aws_acm_certificate_validation" "frontend" {
+  count           = var.domain_name != "" ? 1 : 0
+  certificate_arn = aws_acm_certificate.frontend[0].arn
+  validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
+
+  timeouts {
+    create = "5m"
+  }
+}
+
 # CloudFront Origin Access Identity
 resource "aws_cloudfront_origin_access_identity" "frontend" {
   comment = "OAI for ${var.project_name} frontend"
@@ -248,11 +299,14 @@ resource "aws_cloudfront_origin_access_identity" "frontend" {
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "frontend" {
   origin {
-    domain_name = aws_s3_bucket.frontend.bucket_regional_domain_name
-    origin_id   = "S3-${aws_s3_bucket.frontend.id}"
+    domain_name = "web-afd6gvsg7-ravi-valluris-projects.vercel.app"
+    origin_id   = "Vercel-Frontend"
 
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.frontend.cloudfront_access_identity_path
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
 
@@ -264,7 +318,7 @@ resource "aws_cloudfront_distribution" "frontend" {
   default_cache_behavior {
     allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${aws_s3_bucket.frontend.id}"
+    target_origin_id = "Vercel-Frontend"
 
     forwarded_values {
       query_string = false
@@ -303,8 +357,13 @@ resource "aws_cloudfront_distribution" "frontend" {
     }
   }
 
+  aliases = var.domain_name != "" ? [var.domain_name, "www.${var.domain_name}"] : []
+
   viewer_certificate {
-    cloudfront_default_certificate = true
+    cloudfront_default_certificate = var.domain_name == ""
+    acm_certificate_arn            = var.domain_name != "" ? aws_acm_certificate_validation.frontend[0].certificate_arn : null
+    ssl_support_method             = var.domain_name != "" ? "sni-only" : null
+    minimum_protocol_version       = var.domain_name != "" ? "TLSv1.2_2021" : null
   }
 
   tags = {
@@ -334,17 +393,46 @@ resource "aws_dynamodb_table" "content" {
   }
 
   global_secondary_index {
-    name     = "TypeIndex"
-    hash_key = "type"
+    name            = "TypeIndex"
+    hash_key        = "type"
+    projection_type = "ALL"
   }
 
   global_secondary_index {
-    name     = "SlugIndex"
-    hash_key = "slug"
+    name            = "SlugIndex"
+    hash_key        = "slug"
+    projection_type = "ALL"
   }
 
   tags = {
     Name = "${var.project_name}-content"
+  }
+}
+
+# Route 53 records for custom domain
+resource "aws_route53_record" "frontend_a" {
+  count   = var.domain_name != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.main[0].zone_id
+  name    = var.domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.frontend.domain_name
+    zone_id                = aws_cloudfront_distribution.frontend.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "frontend_www" {
+  count   = var.domain_name != "" ? 1 : 0
+  zone_id = data.aws_route53_zone.main[0].zone_id
+  name    = "www.${var.domain_name}"
+  type    = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.frontend.domain_name
+    zone_id                = aws_cloudfront_distribution.frontend.hosted_zone_id
+    evaluate_target_health = false
   }
 }
 

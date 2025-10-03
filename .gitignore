@@ -263,10 +263,19 @@ QWEN.md
 .env.production
 
 # terraform
-terraform.tfvars.example
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+tfplan
+*.backup
+.terraform.lock.hcl
 
 # md files
 CONTENT_MIGRATION.md
 DEPLOYMENT.md
 DYNAMIC_CONTENT_IMPLEMENTATION.md
 MOBILE_INTEGRATION.md
+
+# txt files
+deployment-info.txt

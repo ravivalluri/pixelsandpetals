@@ -8,8 +8,8 @@ yum update -y
 curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
 yum install -y nodejs
 
-# Install Git
-yum install -y git
+# Install Git and unzip
+yum install -y git unzip
 
 # Install Docker (for future use)
 yum install -y docker
@@ -24,33 +24,88 @@ npm install -g pm2
 mkdir -p /opt/pixelsandpetals
 cd /opt/pixelsandpetals
 
-# Clone the repository
-git clone https://github.com/yourusername/pixelsandpetals.git .
+# For now, create a minimal backend server since we can't access the repository
+# In production, you would deploy your built application here
+cat > package.json << 'EOF'
+{
+  "name": "pixelsandpetals-backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "aws-sdk": "^2.1467.0"
+  }
+}
+EOF
 
-# Install backend dependencies
-cd apps/backend
-npm ci --production
+# Install dependencies
+npm install
+
+# Create a minimal server
+cat > server.js << 'EOF'
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+// CORS configuration
+app.use(cors({
+  origin: [
+    'https://pixelspetals.com',
+    'https://www.pixelspetals.com',
+    'https://d2ahcu8wy7i6cr.cloudfront.net',
+    'https://web-afd6gvsg7-ravi-valluris-projects.vercel.app'
+  ],
+  credentials: true
+}));
+
+app.use(express.json());
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    service: 'pixelsandpetals-backend'
+  });
+});
+
+// Placeholder API endpoints
+app.get('/api/content', (req, res) => {
+  res.json({
+    success: true,
+    data: [],
+    message: 'Content API ready'
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+EOF
 
 # Set up environment variables
 cat > .env << EOF
 NODE_ENV=production
 PORT=3001
-AWS_REGION=us-west-2
+AWS_REGION=us-east-1
 DYNAMODB_TABLE_NAME=pixelsandpetals-content
 CORS_ORIGIN=https://pixelsandpetals.com
 EOF
-
-# Build the application
-npm run build
 
 # Create PM2 ecosystem file
 cat > ecosystem.config.js << EOF
 module.exports = {
   apps: [{
     name: 'pixelsandpetals-backend',
-    script: 'dist/server.js',
-    instances: 'max',
-    exec_mode: 'cluster',
+    script: 'server.js',
+    instances: 1,
+    exec_mode: 'fork',
     env: {
       NODE_ENV: 'production',
       PORT: 3001

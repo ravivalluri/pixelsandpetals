@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { AdaptiveLumenNav } from "@pixelsandpetals/ui";
+import { AdaptiveLumenNav } from "@/components/ui";
 import { BlobMenu } from "@/app/components/BlobMenu";
 import { CommandPalette } from "@/app/components/CommandPalette";
 import { PixelsPetalsLogo } from "@/app/components/PixelsPetalsLogo";

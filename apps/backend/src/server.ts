@@ -11,7 +11,13 @@ const PORT = process.env.PORT || 3001;
 
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'https://pixelspetals.com',
+    'https://www.pixelspetals.com',
+    'https://simple-frontend-a70n6yy0h-ravi-valluris-projects.vercel.app',
+    'https://d2ahcu8wy7i6cr.cloudfront.net'
+  ],
   credentials: true
 }));
 app.use(express.json({ limit: '50mb' }));

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixels & Petals - Creative Design Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff6f61, #ffa726);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .status {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #ff6f61;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .api-status {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎨 Pixels & Petals</div>
+        <div class="tagline">Creative Design Studio - Full Stack AWS Infrastructure</div>
+
+        <div class="status">
+            <h3>🚀 Infrastructure Successfully Deployed!</h3>
+            <p><strong>Custom Domain:</strong> pixelspetals.com</p>
+            <p><strong>Backend API:</strong> AWS EC2 with Auto Scaling</p>
+            <p><strong>Frontend:</strong> Vercel via CloudFront CDN</p>
+            <p><strong>Database:</strong> DynamoDB</p>
+            <p><strong>SSL:</strong> ACM Certificate with Route 53</p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h4>High Performance</h4>
+                <p>Global CDN delivery with CloudFront</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h4>Secure</h4>
+                <p>SSL/TLS encryption with AWS Certificate Manager</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📈</div>
+                <h4>Scalable</h4>
+                <p>Auto Scaling Groups with Load Balancing</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🌐</div>
+                <h4>Global</h4>
+                <p>Multi-region deployment ready</p>
+            </div>
+        </div>
+
+        <div>
+            <a href="https://pixelspetals.com" class="btn">Visit Our Site</a>
+            <a href="mailto:hello@pixelspetals.com" class="btn">Contact Us</a>
+        </div>
+
+        <div class="api-status" id="api-status">
+            <p>🔄 Checking backend status...</p>
+        </div>
+    </div>
+
+    <script>
+        // Check backend API status
+        async function checkBackendStatus() {
+            const statusDiv = document.getElementById('api-status');
+            try {
+                const response = await fetch('http://pixelsandpetals-backend-alb-1723030630.us-east-1.elb.amazonaws.com/health');
+                if (response.ok) {
+                    const data = await response.text();
+                    statusDiv.innerHTML = '<p>✅ Backend API: <strong>Healthy & Running</strong></p><small>Response: ' + data + '</small>';
+                } else {
+                    statusDiv.innerHTML = '<p>⚠️ Backend API: <strong>Responding but not healthy</strong> (Status: ' + response.status + ')</p>';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = '<p>❌ Backend API: <strong>Offline or starting up</strong></p><small>Error: ' + error.message + '</small>';
+            }
+        }
+
+        // Check status on page load
+        checkBackendStatus();
+
+        // Check status every 30 seconds
+        setInterval(checkBackendStatus, 30000);
+    </script>
+</body>
+</html>

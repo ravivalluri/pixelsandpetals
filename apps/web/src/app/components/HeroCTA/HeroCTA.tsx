@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { spacing } from '@pixelsandpetals/ui';
+import { spacing } from '@/components/ui';
 import { useTheme } from '../../context/ThemeContext';
 import styles from './HeroCTA.module.css';
 

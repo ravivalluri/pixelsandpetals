@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTheme } from "@/app/context/ThemeContext";
-import { typography } from '@pixelsandpetals/ui';
+import { typography } from '@/components/ui';
 import styles from './KineticDataVeins.module.css';
 
 // Define reliable color palette for data veins that adapts to theme

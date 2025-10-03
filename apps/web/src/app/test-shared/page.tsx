@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { Button, colors, spacing } from '@pixelsandpetals/ui';
+import { Button, colors, spacing } from '@/components/ui';
 
 export default function TestSharedComponents() {
   return (

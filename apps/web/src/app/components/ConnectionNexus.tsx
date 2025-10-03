@@ -191,14 +191,14 @@ export const ConnectionNexus: React.FC = () => {
   const socialTitle = contactContent?.content?.socialLinks?.title || "Connect";
 
   // Transform API data to component format
-  const contactMethods = contactContent?.content?.directChannels?.methods?.map(method => ({
+  const contactMethods = contactContent?.content?.directChannels?.methods?.map((method: any) => ({
     title: method.title,
     value: method.value,
     icon: iconMap[method.icon] || <FaEnvelope />,
     action: method.action
   })) || fallbackContactMethods;
 
-  const socialLinks = contactContent?.content?.socialLinks?.links?.map(link => ({
+  const socialLinks = contactContent?.content?.socialLinks?.links?.map((link: any) => ({
     name: link.name,
     icon: socialIconMap[link.icon] || <FaLinkedin />,
     url: link.url
@@ -565,7 +565,7 @@ export const ConnectionNexus: React.FC = () => {
                 {directChannelsTitle}
               </h3>
               <div className={styles.contactMethods} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-                {contactMethods.map((method, index) => (
+                {contactMethods.map((method: any, index: number) => (
                   <motion.div
                     key={index}
                     className={styles.methodCard}
