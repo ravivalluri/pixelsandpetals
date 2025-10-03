@@ -13,6 +13,7 @@
         "start": "cd apps/web && next start",
         "start:backend": "cd apps/backend && npm start",
         "lint": "cd apps/web && npm run lint",
+        "test": "echo 'No tests configured yet'",
         "mobile:ios": "cd apps/mobile && expo run:ios",
         "mobile:android": "cd apps/mobile && expo run:android",
         "type-check": "tsc --noEmit",
