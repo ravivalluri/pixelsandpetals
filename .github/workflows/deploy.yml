@@ -1,9 +1,6 @@
-name: Deploy to AWS
+name: Deploy to AWS (DISABLED - using ci-cd.yml)
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
     inputs:
       environment:
