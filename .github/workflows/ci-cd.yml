@@ -65,10 +65,12 @@ jobs:
         uses: codecov/codecov-action@v3
         if: success()
 
-  # Security Scanning - DISABLED (requires security-events: write permission)
+  # Security Scanning
   security-scan:
     runs-on: ubuntu-latest
-    if: false  # Disabled
+    permissions:
+      security-events: write
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -126,11 +128,11 @@ jobs:
             apps/backend/dist/
           retention-days: 7
 
-  # Build and Push Docker Image (DISABLED - using S3/CloudFront deployment instead)
+  # Build and Push Docker Image - Only for backend
   docker-build-push:
     runs-on: ubuntu-latest
     needs: build
-    if: false  # Disabled
+    if: github.ref == 'refs/heads/main' && false  # Disabled until ECR is set up
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -173,11 +175,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  # Deploy to AWS ECS (Production) - DISABLED
+  # Deploy to AWS ECS (Production) - Backend only
   deploy-production:
     runs-on: ubuntu-latest
     needs: docker-build-push
-    if: false  # Disabled - using deploy.yml workflow instead
+    if: github.ref == 'refs/heads/main' && false  # Disabled until ECS cluster is set up
     environment: production
     steps:
       - name: Checkout code
@@ -212,11 +214,11 @@ jobs:
             --cluster pixelsandpetals-cluster \
             --services pixelsandpetals-web-service pixelsandpetals-backend-service
 
-  # Deploy Static Assets to S3/CloudFront - DISABLED
+  # Deploy Static Assets to S3/CloudFront - Handled by deploy.yml workflow
   deploy-static-assets:
     runs-on: ubuntu-latest
     needs: build
-    if: false  # Disabled - using deploy.yml workflow instead
+    if: false  # Disabled - deploy.yml handles S3/CloudFront deployment
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -250,11 +252,11 @@ jobs:
             --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
             --paths "/*"
 
-  # Performance Testing - DISABLED
+  # Performance Testing
   performance-test:
     runs-on: ubuntu-latest
     needs: deploy-production
-    if: false  # Disabled
+    if: github.ref == 'refs/heads/main' && false  # Disabled until deploy-production is enabled
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -269,11 +271,11 @@ jobs:
           uploadArtifacts: true
           temporaryPublicStorage: true
 
-  # Post-deployment notifications - DISABLED
+  # Post-deployment notifications
   notify:
     runs-on: ubuntu-latest
     needs: [deploy-production, deploy-static-assets]
-    if: false  # Disabled
+    if: always() && github.ref == 'refs/heads/main' && false  # Disabled until Slack webhook is configured
     steps:
       - name: Notify Slack on success
         if: success()
