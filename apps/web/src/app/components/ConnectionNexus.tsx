@@ -500,6 +500,15 @@ export const ConnectionNexus: React.FC = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 disabled={isSubmitting}
+                aria-label={
+                  isSubmitting
+                    ? "Sending message..."
+                    : submitStatus === "success"
+                    ? "Message sent successfully"
+                    : submitStatus === "error"
+                    ? "Failed to send message. Try again"
+                    : "Send message"
+                }
               >
                 {isSubmitting ? (
                   <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>

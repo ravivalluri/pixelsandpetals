@@ -241,7 +241,12 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
           >
             <View style={styles.drawerHeader}>
               <Text style={styles.drawerTitle}>Navigation</Text>
-              <TouchableOpacity onPress={closeMenu} style={styles.closeButton}>
+              <TouchableOpacity
+                onPress={closeMenu}
+                style={styles.closeButton}
+                accessibilityLabel="Close navigation menu"
+                accessibilityRole="button"
+              >
                 <Text style={styles.closeButtonText}>✕</Text>
               </TouchableOpacity>
             </View>
@@ -256,6 +261,9 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
                     item.active && styles.drawerItemActive,
                   ]}
                   activeOpacity={0.7}
+                  accessibilityLabel={`Navigate to ${item.label}`}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: item.active }}
                 >
                   <View style={styles.drawerItemContent}>
                     {item.icon && (
@@ -287,6 +295,9 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
                   }}
                   style={styles.contextualSuggestionDrawer}
                   activeOpacity={0.8}
+                  accessibilityLabel={activeContextualSuggestion.text}
+                  accessibilityRole="button"
+                  accessibilityHint="Contextual suggestion based on your activity"
                 >
                   <Text style={styles.contextualSuggestionIcon}>
                     {activeContextualSuggestion.icon}
@@ -325,6 +336,8 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
             }}
             style={styles.logoContainer}
             activeOpacity={0.8}
+            accessibilityLabel="Home"
+            accessibilityRole="button"
           >
             <Animated.View
               style={{
@@ -363,6 +376,8 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
                   onPress={activeContextualSuggestion.action}
                   style={styles.contextualOrbButton}
                   activeOpacity={0.8}
+                  accessibilityLabel={activeContextualSuggestion.text}
+                  accessibilityRole="button"
                 >
                   <Text style={styles.contextualOrbIcon}>
                     {activeContextualSuggestion.icon}
@@ -376,6 +391,8 @@ export const AdaptiveLumenNav: React.FC<AdaptiveLumenNavProps> = ({
               onPress={menuVisible ? closeMenu : openMenu}
               style={styles.menuButton}
               activeOpacity={0.8}
+              accessibilityLabel={menuVisible ? "Close menu" : "Open menu"}
+              accessibilityRole="button"
             >
               {renderHamburgerIcon()}
             </TouchableOpacity>
