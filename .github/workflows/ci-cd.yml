@@ -206,7 +206,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-          path: apps/web/
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
