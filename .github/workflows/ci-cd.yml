@@ -107,10 +107,20 @@ jobs:
         run: npm ci
 
       - name: Build Web application
-        run: npm run build
+        run: |
+          npm run build
+          echo "Build complete, checking output..."
+          ls -la
+          if [ -d "out" ]; then
+            echo "out directory created successfully"
+            ls -la out/ | head -20
+          else
+            echo "Warning: out directory not found after build"
+          fi
         working-directory: ./apps/web
         env:
           NODE_ENV: production
+          NEXT_PUBLIC_API_URL: ${{ secrets.BACKEND_API_URL || 'http://pixelsandpetals-backend-alb-1723030630.us-east-1.elb.amazonaws.com' }}
 
       - name: Build Backend application
         run: npm run build
@@ -210,15 +220,9 @@ jobs:
       - name: List downloaded files
         run: |
           echo "Checking downloaded artifacts..."
-          ls -la
-          if [ -d "apps" ]; then
-            echo "apps directory exists"
-            ls -la apps/
-            if [ -d "apps/web" ]; then
-              echo "apps/web exists"
-              ls -la apps/web/
-            fi
-          fi
+          pwd
+          ls -laR | head -100
+          find . -name "out" -o -name "*.html" | head -20
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
