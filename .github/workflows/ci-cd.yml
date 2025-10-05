@@ -207,6 +207,19 @@ jobs:
         with:
           name: build-artifacts
 
+      - name: List downloaded files
+        run: |
+          echo "Checking downloaded artifacts..."
+          ls -la
+          if [ -d "apps" ]; then
+            echo "apps directory exists"
+            ls -la apps/
+            if [ -d "apps/web" ]; then
+              echo "apps/web exists"
+              ls -la apps/web/
+            fi
+          fi
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -216,7 +229,14 @@ jobs:
 
       - name: Sync static assets to S3
         run: |
-          aws s3 sync apps/web/out/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete
+          if [ -d "apps/web/out" ]; then
+            aws s3 sync apps/web/out/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete
+          elif [ -d "out" ]; then
+            aws s3 sync out/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete
+          else
+            echo "Error: out directory not found"
+            exit 1
+          fi
 
       - name: Invalidate CloudFront cache
         run: |
