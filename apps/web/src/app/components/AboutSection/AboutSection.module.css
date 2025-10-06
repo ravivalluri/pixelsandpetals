@@ -791,6 +791,7 @@
   font-weight: 600;
   font-size: 1.4rem;
   margin: 0 0 8px 0;
+  transition: color 0.2s ease;
 }
 
 .memberNameDark {
@@ -799,6 +800,10 @@
 
 .memberNameLight {
   color: #1a1a1a;
+}
+
+.memberNameLink .memberName {
+  margin-bottom: 8px;
 }
 
 .memberRole {
@@ -830,6 +835,99 @@
 
 .memberBioLight {
   color: rgba(26, 26, 26, 0.7);
+}
+
+/* Member Name Link */
+.memberNameLink {
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.memberNameLink:hover {
+  transform: translateX(2px);
+}
+
+.memberNameLink:hover .memberName {
+  color: #6699ff !important;
+}
+
+.memberNameLink:hover .linkIcon {
+  opacity: 1;
+  transform: translate(2px, -2px);
+}
+
+.memberNameWithLink {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.linkIcon {
+  opacity: 0.6 !important;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  color: currentColor !important;
+  display: inline-block !important;
+  vertical-align: middle;
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px;
+  min-height: 16px;
+  visibility: visible !important;
+}
+
+/* Member Social Links */
+.memberSocial {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(102, 153, 255, 0.2);
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.socialLinkDark {
+  background: rgba(102, 153, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(102, 153, 255, 0.2);
+}
+
+.socialLinkDark:hover {
+  background: rgba(102, 153, 255, 0.2);
+  color: #ffffff;
+  border-color: rgba(102, 153, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 153, 255, 0.3);
+}
+
+.socialLinkLight {
+  background: rgba(102, 153, 255, 0.08);
+  color: rgba(26, 26, 26, 0.7);
+  border: 1px solid rgba(102, 153, 255, 0.15);
+}
+
+.socialLinkLight:hover {
+  background: rgba(102, 153, 255, 0.15);
+  color: #1a1a1a;
+  border-color: rgba(102, 153, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 153, 255, 0.2);
 }
 
 /* Tech Journey Theme Variants */
